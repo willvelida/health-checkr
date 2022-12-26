@@ -128,19 +128,19 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: keyVault.properties.vaultUri
         }
         {
-          name: 'DatabaseName'
+          name: 'Settings__DatabaseName'
           value: cosmosDBName
         }
         {
-          name: 'ContainerName'
+          name: 'Settings__ContainerName'
           value: cosmosContainerName
         }
         {
-          name: 'AccessTokenName'
+          name: 'Settings__AccessTokenName'
           value: accessTokenSecretName
         }
         {
-          name: 'ActivityQueueName'
+          name: 'Settings__ActivityQueueName'
           value: activityQueue.name
         }
         {
