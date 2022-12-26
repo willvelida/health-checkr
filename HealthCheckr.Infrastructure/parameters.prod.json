@@ -10,6 +10,18 @@
         },
         "keyVaultName": {
             "value": "kv-healthcheckr-prod"
+        },
+        "cosmosDBAccountName": {
+            "value": "cosmosdb-healthcheckr-prod"
+        },
+        "databaseName": {
+            "value": "HealthCheckrDB"
+        },
+        "containerName": {
+            "value": "Records"
+        },
+        "appConfigurationName":{
+            "value": "appconfig-healthcheckr-prod"
         }
     }
 }

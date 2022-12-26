@@ -7,8 +7,20 @@ param appServicePlanName string
 @description('Name of the App Insights instance that will be deployed')
 param appInsightsName string
 
+@description('Name of the Cosmos DB account that will be deployed')
+param cosmosDBAccountName string
+
+@description('The name of the database in this Cosmos DB account')
+param databaseName string
+
+@description('The name of the container in this Cosmos DB account')
+param containerName string
+
 @description('The name of the Key Vault that will be deployed')
 param keyVaultName string
+
+@description('The name of the App Configuration resource that will be deployed')
+param appConfigurationName string
 
 @description('The time that the resource was last deployed')
 param lastDeployed string = utcNow()
@@ -18,6 +30,15 @@ var tags = {
   Component: 'Common Infrastructure'
   Environment: 'Production'
   LastDeployed: lastDeployed
+}
+
+module appConfig 'modules/app-config.bicep' = {
+  name: 'appconfig'
+  params: {
+    appConfigurationName: appConfigurationName
+    location: location
+    tags: tags
+  }
 }
 
 module appInsights 'modules/app-insights.bicep' = {
@@ -33,6 +54,18 @@ module appService 'modules/app-service-plan.bicep' = {
   name: 'asp'
   params: {
     appServicePlanName: appServicePlanName
+    location: location
+    tags: tags
+  }
+}
+
+module cosmosDb 'modules/cosmos-db.bicep' = {
+  name: 'cosmosdb'
+  params: {
+    containerName: containerName
+    cosmosDBAccountName: cosmosDBAccountName
+    databaseName: databaseName
+    keyVaultName: keyVault.outputs.keyVaultName
     location: location
     tags: tags
   }
