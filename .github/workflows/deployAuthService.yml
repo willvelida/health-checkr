@@ -86,7 +86,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Test
-      run: dotnet test ./HealthCheckr.Auth/src/HealthCheckr.Auth --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" --results-directory ./coverage
+      run: dotnet test ./HealthCheckr.Auth/src/HealthCheckr.Auth/HealthCheckr.Auth.Services.UnitTests --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
     
     - name: Code Coverage Report
       uses: irongut/CodeCoverageSummary@v1.3.0
