@@ -22,6 +22,9 @@ param keyVaultName string
 @description('The name of the App Configuration resource that will be deployed')
 param appConfigurationName string
 
+@description('The name of the Service Bus Namespace that will be deployed')
+param serviceBusNamespaceName string
+
 @description('The time that the resource was last deployed')
 param lastDeployed string = utcNow()
 
@@ -75,6 +78,15 @@ module keyVault 'modules/key-vault.bicep' = {
   name: 'kv'
   params: {
     keyVaultName: keyVaultName
+    tags: tags
+    location: location
+  }
+}
+
+module serviceBus 'modules/service-bus.bicep' = {
+  name: 'servicebus'
+  params: {
+    serviceBusNamespaceName: serviceBusNamespaceName
     tags: tags
     location: location
   }

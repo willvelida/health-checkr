@@ -22,6 +22,9 @@
         },
         "appConfigurationName":{
             "value": "appconfig-healthcheckr-prod"
+        },
+        "serviceBusNamespaceName": {
+            "value": "sb-healthcheckr-prod"
         }
     }
 }
