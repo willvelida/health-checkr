@@ -100,7 +100,7 @@ jobs:
     needs: build-function
     runs-on: ubuntu-latest
     env: 
-      FUNC_APP_NAME: func-activity-prod
+      FUNC_APP_NAME: func-healthcheckractivity-prod
     
     steps:
       - name: Download Artifact
