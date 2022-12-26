@@ -75,6 +75,9 @@ jobs:
   build-function:
     needs: deploy-infra
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './HealthCheckr.Auth/src/HealthCheckr.Auth/'
     steps:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@v2
@@ -85,7 +88,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Test
-      run: dotnet test ./HealthCheckr.Auth/src/HealthCheckr.Auth/HealthCheckr.Auth.Services.UnitTests --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
     
     - name: Copy Coverage to Predictable Location
       run: cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
@@ -102,7 +105,7 @@ jobs:
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
 
     - name: Publish Functions
-      run: dotnet publish ./HealthCheckr.Auth/src/HealthCheckr.Auth/HealthCheckr.Auth/HealthCheckr.Auth.csproj --configuration Release --output ${{ env.OUTPUT_PATH }}
+      run: dotnet publish ./HealthCheckr.Auth/HealthCheckr.Auth.csproj --configuration Release --output ${{ env.OUTPUT_PATH }}
       
     - name: Package Functions
       uses: actions/upload-artifact@v1
