@@ -8,9 +8,9 @@ namespace HealthCheckr.Auth.Functions
     public class RefreshFitbitTokens
     {
         private readonly IRefreshTokenService _refreshTokenService;
-        private readonly ILogger _logger;
+        private readonly ILogger<RefreshFitbitTokens> _logger;
 
-        public RefreshFitbitTokens(IRefreshTokenService refreshTokenService, ILogger logger)
+        public RefreshFitbitTokens(IRefreshTokenService refreshTokenService, ILogger<RefreshFitbitTokens> logger)
         {
             _refreshTokenService = refreshTokenService;
             _logger = logger;
