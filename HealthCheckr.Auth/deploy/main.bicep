@@ -24,7 +24,7 @@ param lastDeployed string = utcNow()
 
 var functionRuntime = 'dotnet-isolated'
 var tags = {
-  ApplicationName: 'HealthCheckr.Auth'
+  ApplicationName: 'HealthCheckr'
   Component: 'Auth'
   Environment: 'Production'
   LastDeployed: lastDeployed

@@ -31,12 +31,12 @@ param lastDeployed string = utcNow()
 var functionRuntime = 'dotnet-isolated'
 var tags = {
   ApplicationName: 'HealthCheckr'
-  Component: 'Activity'
+  Component: 'Sleep'
   Environment: 'Production'
   LastDeployed: lastDeployed
 }
 
-var activityQueueName = 'activityqueue'
+var sleepQueueName = 'sleepqueue'
 var cosmosDBName = 'MyHealthTrackerDB'
 var cosmosContainerName = 'Records'
 var accessTokenSecretName = 'AccessToken'
@@ -63,8 +63,8 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
   name: serviceBusNamespace
 }
 
-resource activityQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
-  name: activityQueueName
+resource sleepQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
+  name: sleepQueueName
   parent: serviceBus
 }
 
@@ -140,8 +140,8 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: accessTokenSecretName
         }
         {
-          name: 'Settings__ActivityQueueName'
-          value: activityQueue.name
+          name: 'Settings__SleepQueueName'
+          value: sleepQueue.name
         }
         {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
