@@ -1,4 +1,8 @@
 name: HealthCheckr.Auth
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  DOTNET_VERSION: 6.0.x
+  OUTPUT_PATH: ${{ github.workspace }}/.output
 
 on:
   push:
@@ -68,3 +72,64 @@ jobs:
           template: ./HealthCheckr.Auth/deploy/main.bicep
           parameters: ./HealthCheckr.Auth/deploy/parameters.prod.json
           failOnStdErr: false
+
+  build-function:
+    needs: deploy-infra
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v2
+      
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Test
+      run: dotnet test ./HealthCheckr.Auth/src/HealthCheckr.Auth --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" --results-directory ./coverage
+    
+    - name: Code Coverage Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage/**/coverage.cobertura.xml
+        badge: true
+        fail_below_min: false
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '25 75'
+
+    - name: Publish Functions
+      run: dotnet publish ./HealthCheckr.Auth/src/HealthCheckr.Auth/HealthCheckr.Auth/HealthCheckr.Auth.csproj --configuration Release --output ${{ env.OUTPUT_PATH }}
+      
+    - name: Package Functions
+      uses: actions/upload-artifact@v1
+      with:
+        name: functions
+        path: ${{ env.OUTPUT_PATH }}
+
+  deploy-function:
+    needs: build-function
+    runs-on: ubuntu-latest
+    env: 
+      FUNC_APP_NAME: func-healthcheckrauth-prod
+    
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: functions
+          path: ${{ env.OUTPUT_PATH }}
+        
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+      - name: Deploy Function to Azure
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.FUNC_APP_NAME }}
+          package: ${{ env.OUTPUT_PATH }}
