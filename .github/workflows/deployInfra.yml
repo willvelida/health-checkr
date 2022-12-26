@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/*
       - HealthCheckr.Infrastructure/**
   workflow_dispatch:
 
