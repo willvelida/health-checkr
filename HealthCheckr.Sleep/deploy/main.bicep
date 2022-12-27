@@ -195,7 +195,7 @@ resource serviceBusSenderRole 'Microsoft.Authorization/roleAssignments@2020-08-0
   }
 }
 
-module sqlRoleAssignment 'br:acrhealthcheckrprod.azurecr.io/modules/sql-role-assignment:v1' = {
+module sqlRoleAssignment 'modules/sql-role-assignment.bicep' = {
   name: 'sqlRoleAssignment'
   params: {
     cosmosDbAccountName: cosmosDb.name
