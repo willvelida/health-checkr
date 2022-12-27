@@ -65,15 +65,6 @@ module appService 'modules/app-service-plan.bicep' = {
   }
 }
 
-module containerRegistry 'modules/container-registry.bicep' = {
-  name: 'acr'
-  params: {
-    acrName: containerRegistryName
-    location: location
-    tags: tags
-  }
-}
-
 module cosmosDb 'modules/cosmos-db.bicep' = {
   name: 'cosmosdb'
   params: {
