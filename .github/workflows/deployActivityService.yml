@@ -17,6 +17,11 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Sign into Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - uses: actions/checkout@v2
       - name: Run Bicep Linter
         run: az bicep build --file ./HealthCheckr.Activity/deploy/main.bicep
