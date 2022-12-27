@@ -25,9 +25,6 @@ param appConfigurationName string
 @description('The name of the Service Bus Namespace that will be deployed')
 param serviceBusNamespaceName string
 
-@description('The name of the container registry that will be deployed')
-param containerRegistryName string
-
 @description('The time that the resource was last deployed')
 param lastDeployed string = utcNow()
 

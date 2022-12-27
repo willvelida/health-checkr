@@ -25,9 +25,6 @@
         },
         "serviceBusNamespaceName": {
             "value": "sb-healthcheckr-prod"
-        },
-        "containerRegistryName": {
-            "value": "acrhealthcheckrprod"
         }
     }
 }
