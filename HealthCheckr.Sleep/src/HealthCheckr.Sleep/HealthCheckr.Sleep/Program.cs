@@ -27,7 +27,7 @@ var host = new HostBuilder()
         s.AddOptions<Settings>()
         .Configure<IConfiguration>((settings, configuration) =>
         {
-            configuration.GetSection("Settings").Bind(settings);
+            configuration.Bind(settings);
         });
         s.AddSingleton(sp =>
         {
