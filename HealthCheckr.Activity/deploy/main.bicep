@@ -80,7 +80,6 @@ resource cosmosDbEndpointSetting 'Microsoft.AppConfiguration/configurationStores
   name: 'HealthCheckr:Activity:ActivityQueueName'
   properties: {
     value: activityQueue.name
-    contentType: 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8'
     tags: tags
   }
 }

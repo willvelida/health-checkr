@@ -18,3 +18,5 @@ resource appConfig 'Microsoft.AppConfiguration/configurationStores@2022-05-01' =
     type: 'SystemAssigned'
   }
 }
+
+output appConfigName string = appConfig.name

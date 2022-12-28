@@ -16,14 +16,24 @@ param tags object
 @description('The name of the key vault to store secrets in.')
 param keyVaultName string
 
+@description('The App Config instance to store Cosmos Values in')
+param appConfigName string
+
 var cosmosPrimaryMasterKeySecretName = 'CosmosDbPrimaryMasterKey'
 var cosmosPrimaryReadKeySecretName = 'CosmosDbPrimaryReadKey'
 var cosmosSecondaryMasterKeySecretName = 'CosmosDbSecondaryMasterKey'
 var cosmosSecondaryReadKeySecretName = 'CosmosDbSecondaryReadKey'
 var cosmosConnectionStringSecretName = 'CosmosDbConnectionString'
+var cosmosDbEndpointSecretName = 'CosmosDbEndpoint'
+var cosmosDatabaseSettingName = 'HealthCheckr:DatabaseName'
+var cosmosContainerSettingName = 'HealthCheckr:ContainerName'
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
+}
+
+resource appConfig 'Microsoft.AppConfiguration/configurationStores@2022-05-01' existing = {
+  name: appConfigName
 }
 
 resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
@@ -121,5 +131,29 @@ resource cosmosDbConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-
   parent: keyVault
   properties: {
     value: cosmosAccount.listConnectionStrings().connectionStrings[0].connectionString
+  }
+}
+
+resource cosmosDbEndpointSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: cosmosDbEndpointSecretName
+  parent: keyVault
+  properties: {
+    value: cosmosAccount.properties.documentEndpoint
+  }
+}
+
+resource cosmosDatabaseSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
+  name: cosmosDatabaseSettingName
+  parent: appConfig
+  properties: {
+    value: database.name
+  }
+}
+
+resource cosmosContainerSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
+  name: cosmosContainerSettingName
+  parent: appConfig
+  properties: {
+    value: container.name
   }
 }

@@ -18,5 +18,3 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2022-01-01-preview' = {
     type: 'SystemAssigned'
   }
 }
-
-// TODO: Add Service Bus Secrets to Key Vault

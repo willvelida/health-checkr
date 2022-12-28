@@ -69,6 +69,7 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
     cosmosDBAccountName: cosmosDBAccountName
     databaseName: databaseName
     keyVaultName: keyVault.outputs.keyVaultName
+    appConfigName: appConfig.outputs.appConfigName
     location: location
     tags: tags
   }
