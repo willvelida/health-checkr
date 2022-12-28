@@ -39,6 +39,7 @@ var tags = {
   LastDeployed: lastDeployed
 }
 
+var colonVar = ':'
 var activityQueueName = 'activityqueue'
 var cosmosDBName = 'MyHealthTrackerDB'
 var cosmosContainerName = 'Records'
@@ -144,19 +145,19 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: keyVault.properties.vaultUri
         }
         {
-          name: 'Settings:DatabaseName'
+          name: 'Settings${colonVar}DatabaseName'
           value: cosmosDBName
         }
         {
-          name: 'Settings:ContainerName'
+          name: 'Settings${colonVar}ContainerName'
           value: cosmosContainerName
         }
         {
-          name: 'Settings:AccessTokenName'
+          name: 'Settings${colonVar}AccessTokenName'
           value: accessTokenSecretName
         }
         {
-          name: 'Settings:ActivityQueueName'
+          name: 'Settings${colonVar}ActivityQueueName'
           value: activityQueue.name
         }
         {
