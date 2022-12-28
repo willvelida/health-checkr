@@ -210,3 +210,11 @@ resource serviceBusSenderRole 'Microsoft.Authorization/roleAssignments@2020-08-0
     principalType: 'ServicePrincipal'
   }
 }
+
+module sqlRoleAssignment 'modules/sql-role-assignment.bicep' = {
+  name: 'sqlRoleAssignment'
+  params: {
+    cosmosDbAccountName: cosmosDb.name
+    functionAppPrincipalId: functionApp.identity.principalId
+  }
+}
