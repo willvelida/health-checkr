@@ -6,7 +6,7 @@ param functionAppPrincipalId string
 
 var roleDefinitionId = guid('sql-role-definition-', functionAppPrincipalId, cosmosDbAccount.id)
 var roleAssignmentId = guid(roleDefinitionId, functionAppPrincipalId, cosmosDbAccount.id)
-var roleDefinitionName = 'Activity Cosmos DB Metadata Reader Role'
+var roleDefinitionName = 'HealthCheckr Activity Cosmos DB Metadata Reader Role'
 var dataActions = [
   'Microsoft.DocumentDB/databaseAccounts/readMetadata'
   'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
