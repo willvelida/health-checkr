@@ -25,6 +25,9 @@ param cosmosDbAccountName string
 @description('The name of the Service Bus Namespace that this Function will use')
 param serviceBusNamespace string
 
+@description('The name of the App Config instance that this function will use')
+param appConfigName string
+
 @description('The time that the resource was last deployed')
 param lastDeployed string = utcNow()
 
@@ -42,6 +45,10 @@ var cosmosContainerName = 'Records'
 var accessTokenSecretName = 'AccessToken'
 var serviceBusDataReceiverRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
 var serviceBusDataSenderRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
+
+resource appConfig 'Microsoft.AppConfiguration/configurationStores@2022-05-01' existing = {
+  name: appConfigName
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' existing = {
   name: appServicePlanName
@@ -66,6 +73,16 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
 resource activityQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
   name: activityQueueName
   parent: serviceBus
+}
+
+resource cosmosDbEndpointSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
+  parent: appConfig
+  name: 'HealthCheckr:Activity:ActivityQueueName'
+  properties: {
+    value: activityQueue.name
+    contentType: 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8'
+    tags: tags
+  }
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
@@ -128,19 +145,19 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: keyVault.properties.vaultUri
         }
         {
-          name: 'Settings__DatabaseName'
+          name: 'Settings:DatabaseName'
           value: cosmosDBName
         }
         {
-          name: 'Settings__ContainerName'
+          name: 'Settings:ContainerName'
           value: cosmosContainerName
         }
         {
-          name: 'Settings__AccessTokenName'
+          name: 'Settings:AccessTokenName'
           value: accessTokenSecretName
         }
         {
-          name: 'Settings__ActivityQueueName'
+          name: 'Settings:ActivityQueueName'
           value: activityQueue.name
         }
         {
