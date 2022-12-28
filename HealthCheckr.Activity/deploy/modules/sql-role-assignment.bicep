@@ -36,7 +36,7 @@ resource sqlRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinit
 }
 
 resource sqlRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2021-11-15-preview' = {
-  name: '${cosmosDbAccountName}/${roleAssignmentId}'
+  name: guid(resourceGroup().id, cosmosDbAccount.id, roleAssignmentId)
   properties: {
     roleDefinitionId: sqlRoleDefinition.id
     principalId: functionAppPrincipalId
