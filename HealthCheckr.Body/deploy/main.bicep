@@ -138,6 +138,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: '${serviceBus.name}.servicebus.windows.net'
         }
         {
+          name: 'ServiceBusConnection'
+          value: '${serviceBus.name}.servicebus.windows.net'
+        }
+        {
           name: 'KeyVaultUri'
           value: keyVault.properties.vaultUri
         }
