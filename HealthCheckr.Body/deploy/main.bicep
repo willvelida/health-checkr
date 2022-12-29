@@ -135,7 +135,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         }
         {
           name: 'ServiceBusConnection__fullyQualifiedNamespace'
-          value: serviceBus.properties.serviceBusEndpoint
+          value: '${serviceBus.name}.servicebus.windows.net'
         }
         {
           name: 'KeyVaultUri'
