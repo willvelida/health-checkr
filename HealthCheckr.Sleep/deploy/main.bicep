@@ -28,6 +28,9 @@ param serviceBusNamespace string
 @description('The time that the resource was last deployed')
 param lastDeployed string = utcNow()
 
+@description('The name of the App Config instance that this function will use')
+param appConfigName string
+
 var functionRuntime = 'dotnet-isolated'
 var tags = {
   ApplicationName: 'HealthCheckr'
@@ -37,11 +40,13 @@ var tags = {
 }
 
 var sleepQueueName = 'sleepqueue'
-var cosmosDBName = 'MyHealthTrackerDB'
-var cosmosContainerName = 'Records'
-var accessTokenSecretName = 'AccessToken'
 var serviceBusDataReceiverRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
 var serviceBusDataSenderRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
+var appConfigDataReaderRoleId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
+
+resource appConfig 'Microsoft.AppConfiguration/configurationStores@2022-05-01' existing = {
+  name: appConfigName
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' existing = {
   name: appServicePlanName
@@ -66,6 +71,15 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
 resource sleepQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
   name: sleepQueueName
   parent: serviceBus
+}
+
+resource sleepQueueSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
+  parent: appConfig
+  name: 'HealthCheckr:SleepQueueName'
+  properties: {
+    value: sleepQueue.name
+    tags: tags
+  }
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
@@ -128,20 +142,8 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: keyVault.properties.vaultUri
         }
         {
-          name: 'Settings__DatabaseName'
-          value: cosmosDBName
-        }
-        {
-          name: 'Settings__ContainerName'
-          value: cosmosContainerName
-        }
-        {
-          name: 'Settings__AccessTokenName'
-          value: accessTokenSecretName
-        }
-        {
-          name: 'Settings__SleepQueueName'
-          value: sleepQueue.name
+          name: 'AzureAppConfigEndpoint'
+          value: appConfig.properties.endpoint
         }
         {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
@@ -172,6 +174,16 @@ resource accessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2021-11-01-pre
         }
       }
     ]
+  }
+}
+
+resource appConfigDataReaderRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(appConfig.id, functionApp.id, appConfigDataReaderRoleId)
+  scope: appConfig
+  properties: {
+    principalId: functionApp.identity.principalId
+    roleDefinitionId: appConfigDataReaderRoleId
+    principalType: 'ServicePrincipal'
   }
 }
 

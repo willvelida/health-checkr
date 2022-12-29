@@ -8,6 +8,7 @@ using HealthCheckr.Sleep.Services;
 using HealthCheckr.Sleep.Services.Interfaces;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Polly;
@@ -19,6 +20,12 @@ var host = new HostBuilder()
     {
         config.SetBasePath(Directory.GetCurrentDirectory())
         .AddEnvironmentVariables();
+        config.AddAzureAppConfiguration(options =>
+        {
+            options
+            .Connect(new Uri(Environment.GetEnvironmentVariable("AzureAppConfigEndpoint")), new DefaultAzureCredential())
+            .Select(KeyFilter.Any, LabelFilter.Null);
+        });
     })
     .ConfigureServices(s =>
     {
@@ -27,7 +34,7 @@ var host = new HostBuilder()
         s.AddOptions<Settings>()
         .Configure<IConfiguration>((settings, configuration) =>
         {
-            configuration.Bind(settings);
+            configuration.GetSection("HealthCheckr").Bind(settings);
         });
         s.AddSingleton(sp =>
         {

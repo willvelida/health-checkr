@@ -32,7 +32,7 @@ namespace HealthCheckr.Sleep.Services
         {
             try
             {
-                KeyVaultSecret fitbitAccessToken = await _secretClient.GetSecretAsync(_settings.AccessTokenName);
+                KeyVaultSecret fitbitAccessToken = await _secretClient.GetSecretAsync("AccessToken");
                 _httpClient.DefaultRequestHeaders.Clear();
                 Uri getDailySleepLogUri = new Uri($"https://api.fitbit.com/1/user/-/sleep/date/{date}.json");
                 var request = new HttpRequestMessage(HttpMethod.Get, getDailySleepLogUri);

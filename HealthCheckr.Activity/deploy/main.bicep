@@ -73,7 +73,7 @@ resource activityQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
   parent: serviceBus
 }
 
-resource cosmosDbEndpointSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
+resource activityQueueSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
   parent: appConfig
   name: 'HealthCheckr:ActivityQueueName'
   properties: {
