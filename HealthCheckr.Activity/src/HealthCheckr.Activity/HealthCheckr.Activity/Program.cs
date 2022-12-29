@@ -31,7 +31,7 @@ var host = new HostBuilder()
         config.AddAzureAppConfiguration(options =>
         {
             options
-            .Connect(new Uri("AzureAppConfigEndpoint"), new DefaultAzureCredential())
+            .Connect(new Uri(Environment.GetEnvironmentVariable("AzureAppConfigEndpoint")), new DefaultAzureCredential())
             .Select(KeyFilter.Any, LabelFilter.Null);
         });
     })
