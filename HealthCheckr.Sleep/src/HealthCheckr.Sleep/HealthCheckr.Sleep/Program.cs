@@ -44,7 +44,7 @@ var host = new HostBuilder()
         s.AddSingleton(sp =>
         {
             IConfiguration configuration = sp.GetService<IConfiguration>();
-            return new ServiceBusClient(configuration["ServiceBusConnection"], new DefaultAzureCredential());
+            return new ServiceBusClient(configuration["ServiceBusEndpoint"], new DefaultAzureCredential());
         });
         s.AddSingleton(sp =>
         {
