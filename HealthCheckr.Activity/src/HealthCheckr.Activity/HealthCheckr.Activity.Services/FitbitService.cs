@@ -3,7 +3,6 @@ using HealthCheckr.Activity.Common;
 using HealthCheckr.Activity.Common.FitbitResponses;
 using HealthCheckr.Activity.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
@@ -17,12 +16,10 @@ namespace HealthCheckr.Activity.Services
         private readonly ILogger<FitbitService> _logger;
 
         public FitbitService(
-            IOptions<Settings> options,
             SecretClient secretClient,
             HttpClient httpClient,
             ILogger<FitbitService> logger)
         {
-            _settings = options.Value;
             _secretClient = secretClient;
             _httpClient = httpClient;
             _logger = logger;
@@ -32,7 +29,7 @@ namespace HealthCheckr.Activity.Services
         {
             try
             {
-                KeyVaultSecret fitbitAccessToken = await _secretClient.GetSecretAsync(_settings.AccessTokenName);
+                KeyVaultSecret fitbitAccessToken = await _secretClient.GetSecretAsync("AccessToken");
                 _httpClient.DefaultRequestHeaders.Clear();
                 Uri getDailyActivityLogUri = new Uri($"https://api.fitbit.com/1/user/-/activities/date/{date}.json");
                 var request = new HttpRequestMessage(HttpMethod.Get, getDailyActivityLogUri);
