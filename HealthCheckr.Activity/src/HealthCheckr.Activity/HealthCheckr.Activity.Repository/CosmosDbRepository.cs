@@ -14,7 +14,7 @@ namespace HealthCheckr.Activity.Repository
         private readonly Settings _settings;
         private readonly ILogger<CosmosDbRepository> _logger;
 
-        public CosmosDbRepository(CosmosClient cosmosClient, Container container, IOptions<Settings> options, ILogger<CosmosDbRepository> logger)
+        public CosmosDbRepository(CosmosClient cosmosClient,IOptions<Settings> options, ILogger<CosmosDbRepository> logger)
         {
             _settings = options.Value;
             _cosmosClient = cosmosClient;
