@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace HealthCheckr.Body.Services
 {
@@ -36,7 +37,7 @@ namespace HealthCheckr.Body.Services
                 _httpClient.DefaultRequestHeaders.Clear();
                 Uri getV02MaxSummaryUri = new Uri($"https://api.fitbit.com/1/user/-/cardioscore/date/{date}.json");
                 var request = new HttpRequestMessage(HttpMethod.Get, getV02MaxSummaryUri);
-                request.Content = new StringContent("");
+                request.Content = new StringContent("", Encoding.UTF8, "application/json");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", fitbitAccessToken.Value);
 
                 var response = await _httpClient.SendAsync(request);
