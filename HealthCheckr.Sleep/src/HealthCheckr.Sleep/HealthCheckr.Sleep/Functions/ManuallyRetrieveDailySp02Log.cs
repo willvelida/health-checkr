@@ -7,20 +7,20 @@ using Microsoft.Extensions.Logging;
 
 namespace HealthCheckr.Sleep.Functions
 {
-    public class ManuallyRetrieveDailySleepLog
+    public class ManuallyRetrieveDailySp02Log
     {
         private readonly IFitbitService _fitbitService;
         private readonly ISleepService _sleepService;
-        private readonly ILogger<ManuallyRetrieveDailySleepLog> _logger;
+        private readonly ILogger<ManuallyRetrieveDailySp02Log> _logger;
 
-        public ManuallyRetrieveDailySleepLog(IFitbitService fitbitService, ISleepService sleepService, ILogger<ManuallyRetrieveDailySleepLog> logger)
+        public ManuallyRetrieveDailySp02Log(IFitbitService fitbitService, ISleepService sleepService, ILogger<ManuallyRetrieveDailySp02Log> logger)
         {
             _fitbitService = fitbitService;
             _sleepService = sleepService;
             _logger = logger;
         }
 
-        [Function(nameof(ManuallyRetrieveDailySleepLog))]
+        [Function(nameof(ManuallyRetrieveDailySp02Log))]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
         {
             IActionResult result;
@@ -29,12 +29,12 @@ namespace HealthCheckr.Sleep.Functions
             {
                 _logger.LogInformation($"{nameof(GetDailySleepLog)} executed at: {DateTime.Now}");
                 var dateParameter = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
-                _logger.LogInformation($"Attempting to retrieve Sleep Log for {dateParameter}");
-                var sleepResponse = await _fitbitService.GetSleepResponse(dateParameter);
+                _logger.LogInformation($"Attempting to retrieve Sp02 Log for {dateParameter}");
+                var sp02Response = await _fitbitService.GetSp02Response(dateParameter);
 
 
-                _logger.LogInformation("Sending mapped Sleep log to service bus");
-                await _sleepService.MapAndSendSleepRecordToQueue(sleepResponse);
+                _logger.LogInformation("Sending Sp02 log to service bus");
+                await _sleepService.SendSp02RecordToQueue(sp02Response);
 
                 result = new OkResult();
             }

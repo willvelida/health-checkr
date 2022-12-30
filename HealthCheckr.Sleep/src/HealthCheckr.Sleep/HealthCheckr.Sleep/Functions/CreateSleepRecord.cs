@@ -22,8 +22,12 @@ namespace HealthCheckr.Sleep.Functions
         {
             try
             {
+                _logger.LogInformation("Attempting to parse incoming sleep message");
                 var sleep = JsonConvert.DeserializeObject<SleepResponseObject>(sleepQueueItem);
+                _logger.LogInformation($"Parse successful! Persisting sleep for ${sleep.sleep[0].dateOfSleep} to database!");
+
                 await _sleepService.MapSleepEnvelopeAndSaveToDatabase(sleep);
+                _logger.LogInformation($"Sp02 record for {sleep.sleep[0].dateOfSleep} saved to database.");
             }
             catch (Exception ex)
             {

@@ -1,5 +1,4 @@
 ﻿using HealthCheckr.Sleep.Common.FitbitResponses;
-using env = HealthCheckr.Sleep.Common.Envelopes;
 
 namespace HealthCheckr.Sleep.Services.Interfaces
 {
@@ -7,7 +6,7 @@ namespace HealthCheckr.Sleep.Services.Interfaces
     {
         Task MapAndSendSleepRecordToQueue(SleepResponseObject sleepResponse);
         Task MapSleepEnvelopeAndSaveToDatabase(SleepResponseObject sleepResponse);
-        Task<List<env.SleepEnvelope>> GetAllSleepRecords();
-        Task<env.SleepEnvelope> GetSleepRecordByDate(string sleepDate);
+        Task SendSp02RecordToQueue(Sp02ResponseObject sp02Response);
+        Task MapSp02EnvelopeAndSaveToDatabase(Sp02ResponseObject sp02Response);
     }
 }

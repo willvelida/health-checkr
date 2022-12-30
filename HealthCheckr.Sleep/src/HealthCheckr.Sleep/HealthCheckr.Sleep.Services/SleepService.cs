@@ -25,32 +25,6 @@ namespace HealthCheckr.Sleep.Services
             _logger = logger;
         }
 
-        public async Task<List<SleepEnvelope>> GetAllSleepRecords()
-        {
-            try
-            {
-                return await _cosmosDbRepository.GetSleepEnvelopes();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception thrown in {nameof(GetAllSleepRecords)}: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task<SleepEnvelope> GetSleepRecordByDate(string sleepDate)
-        {
-            try
-            {
-                return await _cosmosDbRepository.GetSleepEnvelopeByDate(sleepDate);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception thrown in {nameof(GetSleepRecordByDate)}: {ex.Message}");
-                throw;
-            }
-        }
-
         public async Task MapAndSendSleepRecordToQueue(SleepResponseObject sleepResponse)
         {
             try
@@ -83,6 +57,42 @@ namespace HealthCheckr.Sleep.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Exception thrown in {nameof(MapSleepEnvelopeAndSaveToDatabase)}: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task MapSp02EnvelopeAndSaveToDatabase(Sp02ResponseObject sp02Response)
+        {
+            try
+            {
+                var sp02Envelope = new Sp02Envelope
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Sp02 = sp02Response,
+                    DocumentType = "SP02",
+                    Date = sp02Response.dateTime
+                };
+
+                await _cosmosDbRepository.CreateSp02Document(sp02Envelope);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task SendSp02RecordToQueue(Sp02ResponseObject sp02Response)
+        {
+            try
+            {
+                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.Sp02QueueName);
+                var messageAsJson = JsonConvert.SerializeObject(sp02Response);
+                await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(SendSp02RecordToQueue)}: {ex.Message}");
                 throw;
             }
         }
