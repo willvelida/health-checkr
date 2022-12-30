@@ -27,7 +27,7 @@ namespace HealthCheckr.Sleep.Functions
 
             try
             {
-                _logger.LogInformation($"{nameof(GetDailySleepLog)} executed at: {DateTime.Now}");
+                _logger.LogInformation($"{nameof(ManuallyRetrieveDailySp02Log)} executed at: {DateTime.Now}");
                 var dateParameter = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
                 _logger.LogInformation($"Attempting to retrieve Sp02 Log for {dateParameter}");
                 var sp02Response = await _fitbitService.GetSp02Response(dateParameter);
@@ -40,7 +40,7 @@ namespace HealthCheckr.Sleep.Functions
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception thrown in {nameof(GetDailySleepLog)}: {ex.Message}");
+                _logger.LogError($"Exception thrown in {nameof(ManuallyRetrieveDailySp02Log)}: {ex.Message}");
                 result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 

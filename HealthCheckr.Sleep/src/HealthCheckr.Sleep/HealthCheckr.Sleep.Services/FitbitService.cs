@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace HealthCheckr.Sleep.Services
 {
@@ -63,7 +64,7 @@ namespace HealthCheckr.Sleep.Services
                 _httpClient.DefaultRequestHeaders.Clear();
                 Uri getDailySp02LogUri = new Uri($"https://api.fitbit.com/1/user/-/spo2/date/{date}.json");
                 var request = new HttpRequestMessage(HttpMethod.Get, getDailySp02LogUri);
-                request.Content = new StringContent("");
+                request.Content = new StringContent("", Encoding.UTF8, "application/json");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", fitbitAccessToken.Value);
 
                 var response = await _httpClient.SendAsync(request);
