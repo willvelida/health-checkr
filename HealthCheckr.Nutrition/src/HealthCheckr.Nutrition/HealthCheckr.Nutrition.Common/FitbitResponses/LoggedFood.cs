@@ -11,7 +11,7 @@ namespace HealthCheckr.Nutrition.Common.FitbitResponses
     public class LoggedFood
     {
         public string accessLevel { get; set; }
-        public int amount { get; set; }
+        public double amount { get; set; }
         public string brand { get; set; }
         public int calories { get; set; }
         public int foodId { get; set; }
