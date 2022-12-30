@@ -41,6 +41,7 @@ var tags = {
 
 var bodyQueueName = 'bodyqueue'
 var vo2QueueName = 'v02queue'
+var serviceBusOwnerRoleId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')
 var serviceBusDataReceiverRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
 var serviceBusDataSenderRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
 var appConfigDataReaderRoleId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
@@ -202,6 +203,15 @@ resource appConfigDataReaderRole 'Microsoft.Authorization/roleAssignments@2022-0
   properties: {
     principalId: functionApp.identity.principalId
     roleDefinitionId: appConfigDataReaderRoleId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource serviceBusOwnerRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(serviceBus.id, functionApp.id, serviceBusOwnerRoleId)
+  properties: {
+    principalId: functionApp.identity.principalId
+    roleDefinitionId: serviceBusOwnerRoleId
     principalType: 'ServicePrincipal'
   }
 }
