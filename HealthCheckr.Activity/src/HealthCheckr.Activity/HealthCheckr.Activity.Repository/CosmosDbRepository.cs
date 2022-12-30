@@ -39,5 +39,23 @@ namespace HealthCheckr.Activity.Repository
                 throw;
             }
         }
+
+        public async Task CreateHeartRateDocument(HeartRateEnvelope heartRateEnvelope)
+        {
+            try
+            {
+                ItemRequestOptions itemRequestOptions = new ItemRequestOptions
+                {
+                    EnableContentResponseOnWrite = false
+                };
+
+                await _container.CreateItemAsync(heartRateEnvelope, new PartitionKey(heartRateEnvelope.DocumentType), itemRequestOptions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(CreateHeartRateDocument)}: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

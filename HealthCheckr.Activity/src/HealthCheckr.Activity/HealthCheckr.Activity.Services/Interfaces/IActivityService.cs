@@ -6,5 +6,7 @@ namespace HealthCheckr.Activity.Services.Interfaces
     {
         Task MapAndSendActivityRecordToQueue(ActivityResponse activityResponse);
         Task MapActivityEnvelopeAndSaveToDatabase(string date, ActivityResponse activityResponse);
+        Task SendHeartRateRecordToQueue(HeartRateTimeSeriesResponse heartRateTimeSeriesResponse);
+        Task MapHeartRateEnvelopeAndSaveToDatabase(HeartRateTimeSeriesResponse heartRateTimeSeriesResponse);
     }
 }

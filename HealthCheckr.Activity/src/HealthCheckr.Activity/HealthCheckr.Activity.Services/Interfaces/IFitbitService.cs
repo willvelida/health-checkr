@@ -5,5 +5,6 @@ namespace HealthCheckr.Activity.Services.Interfaces
     public interface IFitbitService
     {
         Task<ActivityResponse> GetActivityResponse(string date);
+        Task<HeartRateTimeSeriesResponse> GetHeartRateTimeSeriesByDate(string date);
     }
 }

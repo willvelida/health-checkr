@@ -40,6 +40,7 @@ var tags = {
 }
 
 var activityQueueName = 'activityqueue'
+var heartRateQueueName = 'heartratequeue'
 var serviceBusOwnerRoleId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')
 var serviceBusDataReceiverRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
 var serviceBusDataSenderRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
@@ -74,11 +75,25 @@ resource activityQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
   parent: serviceBus
 }
 
+resource heartRateQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
+  name: heartRateQueueName
+  parent: serviceBus
+}
+
 resource activityQueueSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
   parent: appConfig
   name: 'HealthCheckr:ActivityQueueName'
   properties: {
     value: activityQueue.name
+    tags: tags
+  }
+}
+
+resource heartRateQueueSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
+  name: 'HealthCheckr:HeartRateQueueName'
+  parent: appConfig
+  properties: {
+    value: heartRateQueue.name
     tags: tags
   }
 }

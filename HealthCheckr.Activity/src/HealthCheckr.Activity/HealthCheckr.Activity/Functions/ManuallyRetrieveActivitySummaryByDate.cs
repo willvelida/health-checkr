@@ -29,7 +29,7 @@ namespace HealthCheckr.Activity.Functions
 
             try
             {
-                _logger.LogInformation($"{nameof(GetActivitySummaryByDate)} executed at: {DateTime.Now}");
+                _logger.LogInformation($"{nameof(ManuallyRetrieveActivitySummaryByDate)} executed at: {DateTime.Now}");
                 var date = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
 
                 _logger.LogInformation($"Attempting to retrieve Daily Activity Summary for {date}");
@@ -43,7 +43,7 @@ namespace HealthCheckr.Activity.Functions
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception thrown in {nameof(GetActivitySummaryByDate)}: {ex.Message}");
+                _logger.LogError($"Exception thrown in {nameof(ManuallyRetrieveActivitySummaryByDate)}: {ex.Message}");
                 result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 

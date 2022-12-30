@@ -64,5 +64,41 @@ namespace HealthCheckr.Activity.Services
                 throw;
             }
         }
+
+        public async Task MapHeartRateEnvelopeAndSaveToDatabase(HeartRateTimeSeriesResponse heartRateTimeSeriesResponse)
+        {
+            try
+            {
+                env.HeartRateEnvelope heartRateEnvelope = new env.HeartRateEnvelope
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    HeartRate = heartRateTimeSeriesResponse,
+                    Date = heartRateTimeSeriesResponse.activitiesheart[0].dateTime,
+                    DocumentType = "HeartRate"
+                };
+
+                await _cosmosDbRepository.CreateHeartRateDocument(heartRateEnvelope);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(MapHeartRateEnvelopeAndSaveToDatabase)}: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task SendHeartRateRecordToQueue(HeartRateTimeSeriesResponse heartRateTimeSeriesResponse)
+        {
+            try
+            {
+                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.HeartRateQueueName);
+                var messageAsJson = JsonConvert.SerializeObject(heartRateTimeSeriesResponse);
+                await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(SendHeartRateRecordToQueue)}: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
