@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using HealthCheckr.Activity.Common.FitbitResponses;
+using Newtonsoft.Json;
 
 namespace HealthCheckr.Activity.Common.Envelopes
 {
@@ -6,7 +7,7 @@ namespace HealthCheckr.Activity.Common.Envelopes
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
-        public Activity Activity { get; set; }
+        public ActivityResponse Activity { get; set; }
         public string Date { get; set; }
         public string DocumentType { get; set; }
     }

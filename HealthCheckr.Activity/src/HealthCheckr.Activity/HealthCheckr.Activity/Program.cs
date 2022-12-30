@@ -1,4 +1,3 @@
-using AutoMapper;
 using Azure.Identity;
 using Azure.Messaging.ServiceBus;
 using Azure.Security.KeyVault.Secrets;
@@ -7,7 +6,6 @@ using HealthCheckr.Activity.Repository;
 using HealthCheckr.Activity.Repository.Interfaces;
 using HealthCheckr.Activity.Services;
 using HealthCheckr.Activity.Services.Interfaces;
-using HealthCheckr.Activity.Services.Mappers;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
@@ -15,12 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Polly;
 using Polly.Extensions.Http;
-
-var mappingConfig = new MapperConfiguration(cfg =>
-{
-    cfg.AddProfile(new MapActivityResponseToActivity());
-});
-var mapper = mappingConfig.CreateMapper();
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -44,8 +36,6 @@ var host = new HostBuilder()
         {
             configuration.GetSection("HealthCheckr").Bind(settings);
         });
-        s.AddAutoMapper(typeof(Program));
-        s.AddSingleton(mapper);
         s.AddSingleton(sp =>
         {
             IConfiguration configuration = sp.GetService<IConfiguration>();

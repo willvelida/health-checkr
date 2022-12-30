@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using HealthCheckr.Activity.Common;
 using HealthCheckr.Activity.Common.FitbitResponses;
 using HealthCheckr.Activity.Repository.Interfaces;
@@ -13,66 +12,33 @@ namespace HealthCheckr.Activity.Services
 {
     public class ActivityService : IActivityService
     {
-        private readonly IMapper _mapper;
         private readonly ServiceBusClient _serviceBusClient;
         private readonly ICosmosDbRepository _cosmosDbRepository;
         private readonly Settings _settings;
         private readonly ILogger<ActivityService> _logger;
 
         public ActivityService(
-            IMapper mapper,
             ServiceBusClient serviceBusClient,
             ILogger<ActivityService> logger,
             IOptions<Settings> options,
             ICosmosDbRepository cosmosDbRepository)
         {
-            _mapper = mapper;
             _serviceBusClient = serviceBusClient;
             _logger = logger;
             _settings = options.Value;
             _cosmosDbRepository = cosmosDbRepository;
         }
 
-        public async Task<env.ActivityEnvelope> GetActivityRecordByDate(string activityDate)
-        {
-            try
-            {
-                var activityRecord = await _cosmosDbRepository.GetActivityEnvelopeByDate(activityDate);
-
-                return activityRecord;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception thrown in {nameof(GetActivityRecordByDate)}: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task<List<env.ActivityEnvelope>> GetAllActivityRecords()
-        {
-            try
-            {
-                var activityRecords = await _cosmosDbRepository.GetActivities();
-
-                return activityRecords;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception thrown in {nameof(GetAllActivityRecords)}: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task MapActivityEnvelopeAndSaveToDatabase(env.Activity activity)
+        public async Task MapActivityEnvelopeAndSaveToDatabase(string date, ActivityResponse activityResponse)
         {
             try
             {
                 env.ActivityEnvelope activityEnvelope = new env.ActivityEnvelope
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Activity = activity,
+                    Activity = activityResponse,
                     DocumentType = "Activity",
-                    Date = activity.ActivityDate
+                    Date = date
                 };
 
                 await _cosmosDbRepository.CreateActivityDocument(activityEnvelope);
@@ -84,16 +50,12 @@ namespace HealthCheckr.Activity.Services
             }
         }
 
-        public async Task MapAndSendActivityRecordToQueue(string date, ActivityResponse activityResponse)
+        public async Task MapAndSendActivityRecordToQueue(ActivityResponse activityResponse)
         {
             try
             {
-                var activity = new env.Activity();
-                activity.ActivityDate = date;
-                _mapper.Map(activityResponse, activity);
-
                 ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.ActivityQueueName);
-                var messageAsJson = JsonConvert.SerializeObject(activity);
+                var messageAsJson = JsonConvert.SerializeObject(activityResponse);
                 await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
             }
             catch (Exception ex)

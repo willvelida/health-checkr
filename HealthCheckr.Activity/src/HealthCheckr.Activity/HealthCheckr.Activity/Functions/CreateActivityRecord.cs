@@ -1,8 +1,8 @@
+using HealthCheckr.Activity.Common.FitbitResponses;
 using HealthCheckr.Activity.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using env = HealthCheckr.Activity.Common.Envelopes;
 
 namespace HealthCheckr.Activity.Functions
 {
@@ -17,13 +17,19 @@ namespace HealthCheckr.Activity.Functions
             _logger = logger;
         }
 
-        [Function("CreateActivityRecord")]
+        [Function(nameof(CreateActivityRecord))]
         public async Task RunAsync([ServiceBusTrigger("activityqueue", Connection = "ServiceBusConnection")] string activityQueueItem)
         {
             try
             {
-                var activity = JsonConvert.DeserializeObject<env.Activity>(activityQueueItem);
-                await _activityService.MapActivityEnvelopeAndSaveToDatabase(activity);
+                var date = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+                _logger.LogInformation($"Attempting to parse Activity Response message for {date}");
+
+                var activity = JsonConvert.DeserializeObject<ActivityResponse>(activityQueueItem);
+
+                _logger.LogInformation($"Adding activity for {date} to database.");
+                await _activityService.MapActivityEnvelopeAndSaveToDatabase(date, activity);
+                _logger.LogInformation($"Activity for {date} successfully persisted");
             }
             catch (Exception ex)
             {

@@ -32,7 +32,7 @@ namespace HealthCheckr.Activity.Functions
                 var activityResponse = await _fitbitService.GetActivityResponse(date);
 
                 _logger.LogInformation($"Mapping response to Activity object and Sending to queue.");
-                await _activityService.MapAndSendActivityRecordToQueue(date, activityResponse);
+                await _activityService.MapAndSendActivityRecordToQueue(activityResponse);
                 _logger.LogInformation($"Activity Summary sent to queue.");
             }
             catch (Exception ex)

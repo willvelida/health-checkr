@@ -1,8 +1,6 @@
-using System.Net;
 using HealthCheckr.Activity.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -38,7 +36,7 @@ namespace HealthCheckr.Activity.Functions
                 var activityResponse = await _fitbitService.GetActivityResponse(date);
 
                 _logger.LogInformation($"Mapping response to Activity object and Sending to queue.");
-                await _activityService.MapAndSendActivityRecordToQueue(date, activityResponse);
+                await _activityService.MapAndSendActivityRecordToQueue(activityResponse);
                 _logger.LogInformation($"Activity Summary sent to queue.");
 
                 result = new OkResult();
