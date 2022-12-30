@@ -40,6 +40,27 @@ namespace HealthCheckr.Sleep.Services
             }
         }
 
+        public async Task MapBreathingEnvelopeAndSaveToDatabase(BreathingRateResponseObject breathingRateResponseObject)
+        {
+            try
+            {
+                var breathingEnvelope = new BreatingRateEnvelope
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    BreathingRate = breathingRateResponseObject,
+                    Date = breathingRateResponseObject.br[0].dateTime,
+                    DocumentType = "BreathingRate"
+                };
+
+                await _cosmosDbRepository.CreateBreathingRateDocument(breathingEnvelope);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(MapBreathingEnvelopeAndSaveToDatabase)}: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task MapSleepEnvelopeAndSaveToDatabase(SleepResponseObject sleepResponse)
         {
             try
@@ -77,7 +98,22 @@ namespace HealthCheckr.Sleep.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Exception thrown in {nameof(MapSp02EnvelopeAndSaveToDatabase)}: {ex.Message}");
+                throw;
+            }
+        }
 
+        public async Task SendBreathingResponseToQueue(BreathingRateResponseObject breathingRateResponseObject)
+        {
+            try
+            {
+                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.Sp02QueueName);
+                var messageAsJson = JsonConvert.SerializeObject(breathingRateResponseObject);
+                await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(SendBreathingResponseToQueue)}: {ex.Message}");
                 throw;
             }
         }

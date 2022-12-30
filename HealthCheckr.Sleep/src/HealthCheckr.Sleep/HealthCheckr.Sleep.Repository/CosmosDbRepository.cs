@@ -22,6 +22,24 @@ namespace HealthCheckr.Sleep.Repository
             _logger = logger;
         }
 
+        public async Task CreateBreathingRateDocument(BreatingRateEnvelope breatingRateEnvelope)
+        {
+            try
+            {
+                ItemRequestOptions itemRequestOptions = new ItemRequestOptions
+                {
+                    EnableContentResponseOnWrite = false
+                };
+
+                await _container.CreateItemAsync(breatingRateEnvelope, new PartitionKey(breatingRateEnvelope.DocumentType), itemRequestOptions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(CreateBreathingRateDocument)}: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task CreateSleepDocument(SleepEnvelope sleepEnvelope)
         {
             try

@@ -29,6 +29,33 @@ namespace HealthCheckr.Sleep.Services
             _logger = logger;
         }
 
+        public async Task<BreathingRateResponseObject> GetBreathingRateResponse(string date)
+        {
+            try
+            {
+                KeyVaultSecret fitbitAccessToken = await _secretClient.GetSecretAsync("AccessToken");
+                _httpClient.DefaultRequestHeaders.Clear();
+                Uri getBreathingRateUri = new Uri($"https://api.fitbit.com/1/user/-/br/date/{date}.json");
+                var request = new HttpRequestMessage(HttpMethod.Get, getBreathingRateUri);
+                request.Content = new StringContent("", Encoding.UTF8, "application/json");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", fitbitAccessToken.Value);
+
+                var response = await _httpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                var breathingResponse = JsonConvert.DeserializeObject<BreathingRateResponseObject>(responseString);
+
+                return breathingResponse;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(GetSp02Response)}: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<SleepResponseObject> GetSleepResponse(string date)
         {
             try

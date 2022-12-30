@@ -41,6 +41,7 @@ var tags = {
 
 var sleepQueueName = 'sleepqueue'
 var sp02queueName = 'sp02queue'
+var breathingRateQueueName = 'breathingratequeue'
 var serviceBusDataReceiverRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
 var serviceBusDataSenderRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
 var appConfigDataReaderRoleId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
@@ -79,6 +80,11 @@ resource sp02Queue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
   parent: serviceBus
 }
 
+resource breathingRateQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
+  name: breathingRateQueueName
+  parent: serviceBus
+}
+
 resource sleepQueueSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
   parent: appConfig
   name: 'HealthCheckr:SleepQueueName'
@@ -93,6 +99,15 @@ resource sq02QueueSetting 'Microsoft.AppConfiguration/configurationStores/keyVal
   parent: appConfig
   properties: {
     value: sp02Queue.name
+    tags: tags
+  }
+}
+
+resource breathingRateQueueSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
+  name: 'HealthCheckr:BreathingRateQueueName'
+  parent: appConfig
+  properties: {
+    value: breathingRateQueue.name
     tags: tags
   }
 }

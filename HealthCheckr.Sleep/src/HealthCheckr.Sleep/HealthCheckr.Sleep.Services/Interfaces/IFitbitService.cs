@@ -6,5 +6,6 @@ namespace HealthCheckr.Sleep.Services.Interfaces
     {
         Task<SleepResponseObject> GetSleepResponse(string date);
         Task<Sp02ResponseObject> GetSp02Response(string date);
+        Task<BreathingRateResponseObject> GetBreathingRateResponse(string date);
     }
 }
