@@ -1,5 +1,10 @@
 name: HealthCheckr.Nutrition
 
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  DOTNET_VERSION: 6.0.x
+  OUTPUT_PATH: ${{ github.workspace }}/.output
+
 on:
   push:
     branches:
@@ -72,3 +77,50 @@ jobs:
           template: ./HealthCheckr.Nutrition/deploy/main.bicep
           parameters: ./HealthCheckr.Nutrition/deploy/parameters.prod.json
           failOnStdErr: false
+  build-function:
+    needs: deploy-infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './HealthCheckr.Nutrition/src/HealthCheckr.Nutrition/'
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v2
+      
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Publish Functions
+      run: dotnet publish ./HealthCheckr.Nutrition/HealthCheckr.Nutrition.csproj --configuration Release --output ${{ env.OUTPUT_PATH }}
+      
+    - name: Package Functions
+      uses: actions/upload-artifact@v1
+      with:
+        name: nutrition-function
+        path: ${{ env.OUTPUT_PATH }}
+
+  deploy-function:
+    needs: build-function
+    runs-on: ubuntu-latest
+    env: 
+      FUNC_APP_NAME: func-healthcheckrnutrition-prod
+    
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: nutrition-function
+          path: ${{ env.OUTPUT_PATH }}
+        
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+      - name: Deploy Function to Azure
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.FUNC_APP_NAME }}
+          package: ${{ env.OUTPUT_PATH }}
