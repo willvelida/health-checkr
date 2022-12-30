@@ -107,7 +107,7 @@ namespace HealthCheckr.Sleep.Services
         {
             try
             {
-                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.Sp02QueueName);
+                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.BreathingRateQueueName);
                 var messageAsJson = JsonConvert.SerializeObject(breathingRateResponseObject);
                 await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
             }
