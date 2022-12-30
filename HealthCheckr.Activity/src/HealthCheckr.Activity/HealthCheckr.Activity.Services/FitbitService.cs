@@ -1,5 +1,4 @@
 ﻿using Azure.Security.KeyVault.Secrets;
-using HealthCheckr.Activity.Common;
 using HealthCheckr.Activity.Common.FitbitResponses;
 using HealthCheckr.Activity.Services.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,6 @@ namespace HealthCheckr.Activity.Services
 {
     public class FitbitService : IFitbitService
     {
-        private readonly Settings _settings;
         private readonly SecretClient _secretClient;
         private readonly HttpClient _httpClient;
         private readonly ILogger<FitbitService> _logger;

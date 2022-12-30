@@ -1,6 +1,8 @@
+using HealthCheckr.Activity.Common;
 using HealthCheckr.Activity.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace HealthCheckr.Activity.Functions
 {
@@ -9,11 +11,14 @@ namespace HealthCheckr.Activity.Functions
         private readonly IFitbitService _fitbitService;
         private readonly IActivityService _activityService;
         private readonly ILogger<GetHeartRateSeriesByDate> _logger;
+        private readonly Settings _settings;
 
         public GetHeartRateSeriesByDate(IFitbitService fitbitService,
             IActivityService activityService,
-            ILogger<GetHeartRateSeriesByDate> logger)
+            ILogger<GetHeartRateSeriesByDate> logger,
+            IOptions<Settings> options)
         {
+            _settings = options.Value;
             _fitbitService = fitbitService;
             _activityService = activityService;
             _logger = logger;
@@ -31,7 +36,7 @@ namespace HealthCheckr.Activity.Functions
                 var heartRateTimeSeriesResponse = await _fitbitService.GetHeartRateTimeSeriesByDate(date);
 
                 _logger.LogInformation($"Mapping response to Heart Rate object and Sending to queue.");
-                await _activityService.SendHeartRateRecordToQueue(heartRateTimeSeriesResponse);
+                await _activityService.SendRecordToQueue(heartRateTimeSeriesResponse, _settings.HeartRateQueueName);
                 _logger.LogInformation($"Heart Rate Series Data sent to queue.");
             }
             catch (Exception ex)

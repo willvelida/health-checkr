@@ -1,6 +1,8 @@
+using HealthCheckr.Activity.Common;
 using HealthCheckr.Activity.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace HealthCheckr.Activity.Functions
 {
@@ -9,12 +11,15 @@ namespace HealthCheckr.Activity.Functions
         private readonly IFitbitService _fitbitService;
         private readonly IActivityService _activityService;
         private readonly ILogger<GetActivitySummaryByDate> _logger;
+        private readonly Settings _settings;
 
         public GetActivitySummaryByDate(
             IFitbitService fitbitService,
             IActivityService activityService,
-            ILogger<GetActivitySummaryByDate> logger)
+            ILogger<GetActivitySummaryByDate> logger,
+            IOptions<Settings> options)
         {
+            _settings = options.Value;
             _fitbitService = fitbitService;
             _activityService = activityService;
             _logger = logger;
@@ -32,7 +37,7 @@ namespace HealthCheckr.Activity.Functions
                 var activityResponse = await _fitbitService.GetActivityResponse(date);
 
                 _logger.LogInformation($"Mapping response to Activity object and Sending to queue.");
-                await _activityService.MapAndSendActivityRecordToQueue(activityResponse);
+                await _activityService.SendRecordToQueue(activityResponse, _settings.ActivityQueueName);
                 _logger.LogInformation($"Activity Summary sent to queue.");
             }
             catch (Exception ex)
