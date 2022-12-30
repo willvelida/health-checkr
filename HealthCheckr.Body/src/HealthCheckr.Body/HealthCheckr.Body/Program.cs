@@ -1,18 +1,18 @@
-using HealthCheckr.Body.Repository.Interfaces;
-using HealthCheckr.Body.Repository;
-using HealthCheckr.Body.Services.Interfaces;
-using HealthCheckr.Body.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Polly.Extensions.Http;
-using Polly;
-using Microsoft.Extensions.Configuration.AzureAppConfiguration;
-using HealthCheckr.Body.Common;
-using Azure.Security.KeyVault.Secrets;
 using Azure.Identity;
 using Azure.Messaging.ServiceBus;
+using Azure.Security.KeyVault.Secrets;
+using HealthCheckr.Body.Common;
+using HealthCheckr.Body.Repository;
+using HealthCheckr.Body.Repository.Interfaces;
+using HealthCheckr.Body.Services;
+using HealthCheckr.Body.Services.Interfaces;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Polly;
+using Polly.Extensions.Http;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()

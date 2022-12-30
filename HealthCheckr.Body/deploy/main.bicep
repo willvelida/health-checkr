@@ -40,6 +40,7 @@ var tags = {
 }
 
 var bodyQueueName = 'bodyqueue'
+var vo2QueueName = 'v02queue'
 var serviceBusDataReceiverRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
 var serviceBusDataSenderRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
 var appConfigDataReaderRoleId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
@@ -73,11 +74,25 @@ resource bodyQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
   parent: serviceBus
 }
 
+resource vo2Queue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
+  name: vo2QueueName
+  parent: serviceBus
+}
+
 resource bodyQueueSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
   parent: appConfig
   name: 'HealthCheckr:BodyQueueName'
   properties: {
     value: bodyQueue.name
+    tags: tags
+  }
+}
+
+resource vo2QueueSetting 'Microsoft.AppConfiguration/configurationStores/keyValues@2022-05-01' = {
+  name: 'HealthCheckr:V02QueueName'
+  parent: appConfig
+  properties: {
+    value: vo2Queue.name
     tags: tags
   }
 }

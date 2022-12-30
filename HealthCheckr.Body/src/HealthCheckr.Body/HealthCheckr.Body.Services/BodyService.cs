@@ -7,11 +7,6 @@ using HealthCheckr.Body.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HealthCheckr.Body.Services
 {
@@ -45,6 +40,27 @@ namespace HealthCheckr.Body.Services
             }
         }
 
+        public async Task MapCardioEnvelopeAndSaveToDatabase(CardioResponseObject cardioResponseObject)
+        {
+            try
+            {
+                var cardioEnvelope = new CardioEnvelope
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Cardio = cardioResponseObject,
+                    Date = cardioResponseObject.cardioScore[0].dateTime,
+                    DocumentType = "V02"
+                };
+
+                await _cosmosDbRepository.CreateV02MaxDocument(cardioEnvelope);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(MapCardioEnvelopeAndSaveToDatabase)}: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task MapWeightEnvelopeAndSaveToDatabase(Weight weight)
         {
             try
@@ -62,6 +78,21 @@ namespace HealthCheckr.Body.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Exception thrown in {nameof(MapWeightEnvelopeAndSaveToDatabase)}: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task SendCardioResponseObjectToQueue(CardioResponseObject cardioResponseObject)
+        {
+            try
+            {
+                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.V02QueueName);
+                var messageAsJson = JsonConvert.SerializeObject(cardioResponseObject);
+                await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(SendCardioResponseObjectToQueue)}: {ex.Message}");
                 throw;
             }
         }

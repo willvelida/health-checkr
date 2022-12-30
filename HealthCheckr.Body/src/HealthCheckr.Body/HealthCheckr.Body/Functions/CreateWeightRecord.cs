@@ -1,4 +1,3 @@
-using System;
 using HealthCheckr.Body.Common.FitbitResponses;
 using HealthCheckr.Body.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;

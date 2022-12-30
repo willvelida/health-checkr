@@ -1,6 +1,3 @@
-using System;
-using System.Security.Cryptography;
-using HealthCheckr.Body.Services;
 using HealthCheckr.Body.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;

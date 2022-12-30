@@ -22,6 +22,24 @@ namespace HealthCheckr.Body.Repository
             _logger = logger;
         }
 
+        public async Task CreateV02MaxDocument(CardioEnvelope cardioEnvelope)
+        {
+            try
+            {
+                ItemRequestOptions itemRequestOptions = new ItemRequestOptions
+                {
+                    EnableContentResponseOnWrite = false
+                };
+
+                await _container.CreateItemAsync(cardioEnvelope, new PartitionKey(cardioEnvelope.DocumentType), itemRequestOptions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(CreateWeightDocument)}: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task CreateWeightDocument(WeightEnvelope weightEnvelope)
         {
             try

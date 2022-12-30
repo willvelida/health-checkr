@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Body", "HealthCheckr.Body\HealthCheckr.Body.csproj", "{FE4ED661-9D27-45E2-A0CD-6F3EFB50D297}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Body", "HealthCheckr.Body\HealthCheckr.Body.csproj", "{FE4ED661-9D27-45E2-A0CD-6F3EFB50D297}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Body.Common", "HealthCheckr.Body.Common\HealthCheckr.Body.Common.csproj", "{5DF5D2B9-8756-4D3B-AF47-9BF730324EBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Body.Common", "HealthCheckr.Body.Common\HealthCheckr.Body.Common.csproj", "{5DF5D2B9-8756-4D3B-AF47-9BF730324EBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Body.Repository", "HealthCheckr.Body.Repository\HealthCheckr.Body.Repository.csproj", "{C9FAA408-6A0A-4D80-8496-41A53CFF683A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Body.Repository", "HealthCheckr.Body.Repository\HealthCheckr.Body.Repository.csproj", "{C9FAA408-6A0A-4D80-8496-41A53CFF683A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Body.Services", "HealthCheckr.Body.Services\HealthCheckr.Body.Services.csproj", "{3D24B11F-D499-4D66-AD5C-55AC6F4187C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Body.Services", "HealthCheckr.Body.Services\HealthCheckr.Body.Services.csproj", "{3D24B11F-D499-4D66-AD5C-55AC6F4187C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
