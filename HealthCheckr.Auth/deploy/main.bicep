@@ -93,6 +93,10 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
           name: 'KeyVaultUri'
           value: keyVault.properties.vaultUri
         }
+        {
+          name: 'WEBSITE_TIME_ZONE'
+          value: 'New Zealand Standard Times'
+        }
       ]
     }
     httpsOnly: true

@@ -154,6 +154,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
           value: '1'
         }
+        {
+          name: 'WEBSITE_TIME_ZONE'
+          value: 'New Zealand Standard Times'
+        }
       ]
     }
     httpsOnly: true
