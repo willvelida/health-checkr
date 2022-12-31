@@ -18,7 +18,6 @@ on:
 jobs:
 
   build-function:
-    needs: deploy-infra
     runs-on: ubuntu-latest
     defaults:
       run:
