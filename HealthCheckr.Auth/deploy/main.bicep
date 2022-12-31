@@ -95,7 +95,7 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
         }
         {
           name: 'WEBSITE_TIME_ZONE'
-          value: 'New Zealand Standard Times'
+          value: 'New Zealand Standard Time'
         }
       ]
     }
