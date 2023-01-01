@@ -4,13 +4,11 @@ param keyVaultName string
 @description('The location that our resources will be deployed to.')
 param location string = resourceGroup().location
 
-@description('Flag to indicate if this is a new Key Vault, and therefore should have no access policies configured. Default is false')
-param isNewKeyVault bool = false
+@description('The access policies to apply to the Key Vault')
+param accessPolicies array
 
 @description('The tags that will be applied to the Key Vault')
 param tags object
-
-var accessPolicies = isNewKeyVault ? [] : reference(resourceId('Microsoft.KeyVault/vaults', keyVaultName), '2022-07-01').accessPolicies
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName

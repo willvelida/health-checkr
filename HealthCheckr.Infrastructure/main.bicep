@@ -25,6 +25,9 @@ param appConfigurationName string
 @description('The name of the Service Bus Namespace that will be deployed')
 param serviceBusNamespaceName string
 
+@description('Flag to indicate if this is a new Key Vault, and therefore should have no access policies configured. Default is false')
+param isNewKeyVault bool = false
+
 @description('The time that the resource was last deployed')
 param lastDeployed string = utcNow()
 
@@ -34,6 +37,8 @@ var tags = {
   Environment: 'Production'
   LastDeployed: lastDeployed
 }
+
+var accessPolicies = isNewKeyVault ? [] : reference(resourceId('Microsoft.KeyVault/vaults', keyVaultName), '2022-07-01').accessPolicies
 
 module appConfig 'modules/app-config.bicep' = {
   name: 'appconfig'
@@ -81,6 +86,7 @@ module keyVault 'modules/key-vault.bicep' = {
     keyVaultName: keyVaultName
     tags: tags
     location: location
+    accessPolicies: accessPolicies
   }
 }
 
