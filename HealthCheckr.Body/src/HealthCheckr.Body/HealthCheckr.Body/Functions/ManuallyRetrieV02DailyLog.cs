@@ -1,9 +1,11 @@
+using HealthCheckr.Body.Common;
 using HealthCheckr.Body.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace HealthCheckr.Body.Functions
 {
@@ -12,9 +14,11 @@ namespace HealthCheckr.Body.Functions
         private readonly IFitbitService _fitbitService;
         private readonly IBodyService _bodyService;
         private readonly ILogger<ManuallyRetrieV02DailyLog> _logger;
+        private readonly Settings _settings;
 
-        public ManuallyRetrieV02DailyLog(IFitbitService fitbitService, IBodyService bodyService, ILogger<ManuallyRetrieV02DailyLog> logger)
+        public ManuallyRetrieV02DailyLog(IFitbitService fitbitService, IBodyService bodyService, ILogger<ManuallyRetrieV02DailyLog> logger, IOptions<Settings> options)
         {
+            _settings = options.Value;
             _fitbitService = fitbitService;
             _bodyService = bodyService;
             _logger = logger;
@@ -34,7 +38,7 @@ namespace HealthCheckr.Body.Functions
                 var cardioResponse = await _fitbitService.GetV02MaxSummary(date);
 
                 _logger.LogInformation($"Mapping response to v02 object and Sending to queue.");
-                await _bodyService.SendCardioResponseObjectToQueue(cardioResponse);
+                await _bodyService.SendRecordToQueue(cardioResponse, _settings.V02QueueName);
                 _logger.LogInformation($"V02 Summary sent to queue.");
 
                 result = new OkResult();

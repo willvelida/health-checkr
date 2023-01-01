@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Body.Repositor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Body.Services", "HealthCheckr.Body.Services\HealthCheckr.Body.Services.csproj", "{3D24B11F-D499-4D66-AD5C-55AC6F4187C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Body.Services.UnitTests", "HealthCheckr.Body.Services.UnitTests\HealthCheckr.Body.Services.UnitTests.csproj", "{58E3AF88-6CBA-4C2C-AAB8-68F371F2D6A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3D24B11F-D499-4D66-AD5C-55AC6F4187C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D24B11F-D499-4D66-AD5C-55AC6F4187C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D24B11F-D499-4D66-AD5C-55AC6F4187C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58E3AF88-6CBA-4C2C-AAB8-68F371F2D6A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58E3AF88-6CBA-4C2C-AAB8-68F371F2D6A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58E3AF88-6CBA-4C2C-AAB8-68F371F2D6A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58E3AF88-6CBA-4C2C-AAB8-68F371F2D6A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

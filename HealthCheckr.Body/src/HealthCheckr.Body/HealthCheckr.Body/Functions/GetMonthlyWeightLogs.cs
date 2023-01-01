@@ -1,6 +1,8 @@
+using HealthCheckr.Body.Common;
 using HealthCheckr.Body.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace HealthCheckr.Body.Functions
 {
@@ -9,9 +11,11 @@ namespace HealthCheckr.Body.Functions
         private readonly IFitbitService _fitbitService;
         private readonly IBodyService _bodyService;
         private readonly ILogger<GetMonthlyWeightLogs> _logger;
+        private readonly Settings _settings;
 
-        public GetMonthlyWeightLogs(IFitbitService fitbitService, IBodyService bodyService, ILogger<GetMonthlyWeightLogs> logger)
+        public GetMonthlyWeightLogs(IFitbitService fitbitService, IBodyService bodyService, ILogger<GetMonthlyWeightLogs> logger, IOptions<Settings> options)
         {
+            _settings = options.Value;
             _fitbitService = fitbitService;
             _bodyService = bodyService;
             _logger = logger;
@@ -33,7 +37,7 @@ namespace HealthCheckr.Body.Functions
 
                 foreach (var record in weightResponse.weight)
                 {
-                    await _bodyService.MapAndSendWeightRecordToQueue(record);
+                    await _bodyService.SendRecordToQueue(weightResponse, _settings.BodyQueueName);
                 }
                 _logger.LogInformation($"Successfully mapped and sent {weightResponse.weight.Count} records to Service Bus.");
             }
