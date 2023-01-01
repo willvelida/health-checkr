@@ -84,7 +84,7 @@ namespace HealthCheckr.Body.Services.UnitTests
             Func<Task> bodyServiceAction = async () => await _sut.MapWeightEnvelopeAndSaveToDatabase(weight);
 
             // ASSERT
-            await bodyServiceAction.Should().NotThrowAsync();
+            await bodyServiceAction.Should().ThrowAsync<Exception>();
             _loggerMock.VerifyLog(logger => logger.LogError($"Exception thrown in MapWeightEnvelopeAndSaveToDatabase: Mock Failure"));
         }
 
@@ -104,7 +104,7 @@ namespace HealthCheckr.Body.Services.UnitTests
             Func<Task> bodyServiceAction = async () => await _sut.MapCardioEnvelopeAndSaveToDatabase(cardio);
 
             // ASSERT
-            await bodyServiceAction.Should().NotThrowAsync();
+            await bodyServiceAction.Should().ThrowAsync<Exception>();
             _loggerMock.VerifyLog(logger => logger.LogError($"Exception thrown in MapCardioEnvelopeAndSaveToDatabase: Mock Failure"));
         }
 
@@ -125,11 +125,11 @@ namespace HealthCheckr.Body.Services.UnitTests
                 .Returns(Task.CompletedTask);
 
             // ACT
-            Func<Task> activityServiceAction = async () => await _sut.SendRecordToQueue(weightResponse, queueName);
+            Func<Task> bodyServiceAction = async () => await _sut.SendRecordToQueue(weightResponse, queueName);
 
             // ASSERT
-            await activityServiceAction.Should().ThrowAsync<Exception>();
-            _loggerMock.VerifyLog(logger => logger.LogError($"Exception thrown in SendRecordToQueue: Mock Failure"));
+            await bodyServiceAction.Should().NotThrowAsync<Exception>();
+            _serviceBusSenderMock.Verify(x => x.SendMessageAsync(It.IsAny<ServiceBusMessage>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -149,10 +149,10 @@ namespace HealthCheckr.Body.Services.UnitTests
                 .ThrowsAsync(new Exception("Mock Failure"));
 
             // ACT
-            Func<Task> activityServiceAction = async () => await _sut.SendRecordToQueue(weightResponse, queueName);
+            Func<Task> bodyServiceAction = async () => await _sut.SendRecordToQueue(weightResponse, queueName);
 
             // ASSERT
-            await activityServiceAction.Should().ThrowAsync<Exception>();
+            await bodyServiceAction.Should().ThrowAsync<Exception>();
             _loggerMock.VerifyLog(logger => logger.LogError($"Exception thrown in SendRecordToQueue: Mock Failure"));
         }
     }
