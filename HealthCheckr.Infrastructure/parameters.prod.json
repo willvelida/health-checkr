@@ -8,6 +8,9 @@
         "appInsightsName": {
             "value": "ai-healthcheckr-prod"
         },
+        "budgetName":{
+            "value": "budget-healthcheckr-prod"
+        },
         "keyVaultName": {
             "value": "kv-healthcheckr-prod"
         },

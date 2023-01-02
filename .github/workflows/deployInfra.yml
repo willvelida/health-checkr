@@ -33,7 +33,7 @@ jobs:
           deploymentName: ${{ github.run_number }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./HealthCheckr.Infrastructure/main.bicep
-          parameters: ./HealthCheckr.Infrastructure/parameters.prod.json
+          parameters: ./HealthCheckr.Infrastructure/parameters.prod.json emailAddress=${{ secrets.EMAIL_ADDRESS }}
           deploymentMode: Validate
 
   preview:
@@ -49,7 +49,7 @@ jobs:
         name: Run what-if
         with:
           inlineScript: |
-            az deployment group what-if --resource-group ${{ secrets.AZURE_RG }} --template-file ./HealthCheckr.Infrastructure/main.bicep --parameters ./HealthCheckr.Infrastructure/parameters.prod.json
+            az deployment group what-if --resource-group ${{ secrets.AZURE_RG }} --template-file ./HealthCheckr.Infrastructure/main.bicep --parameters ./HealthCheckr.Infrastructure/parameters.prod.json emailAddress=${{ secrets.EMAIL_ADDRESS }}
   deploy:
     runs-on: ubuntu-latest
     environment: Production
@@ -66,5 +66,5 @@ jobs:
         with:
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./HealthCheckr.Infrastructure/main.bicep
-          parameters: ./HealthCheckr.Infrastructure/parameters.prod.json
+          parameters: ./HealthCheckr.Infrastructure/parameters.prod.json emailAddress=${{ secrets.EMAIL_ADDRESS }}
           failOnStdErr: false

@@ -7,6 +7,9 @@ param appServicePlanName string
 @description('Name of the App Insights instance that will be deployed')
 param appInsightsName string
 
+@description('Name of the Budget that will be created')
+param budgetName string
+
 @description('Name of the Cosmos DB account that will be deployed')
 param cosmosDBAccountName string
 
@@ -25,6 +28,9 @@ param appConfigurationName string
 @description('The name of the Service Bus Namespace that will be deployed')
 param serviceBusNamespaceName string
 
+@description('The email address to use for the budget')
+param emailAddress string
+
 @description('Flag to indicate if this is a new Key Vault, and therefore should have no access policies configured. Default is false')
 param isNewKeyVault bool = false
 
@@ -37,6 +43,7 @@ var tags = {
   Environment: 'Production'
   LastDeployed: lastDeployed
 }
+var budgetStartDate = '2023-01-01'
 
 var accessPolicies = isNewKeyVault ? [] : reference(resourceId('Microsoft.KeyVault/vaults', keyVaultName), '2022-07-01').accessPolicies
 
@@ -64,6 +71,15 @@ module appService 'modules/app-service-plan.bicep' = {
     appServicePlanName: appServicePlanName
     location: location
     tags: tags
+  }
+}
+
+module budget 'modules/budget.bicep' = {
+  name: 'budget'
+  params: {
+    budgetName: budgetName
+    ownerEmailAddress: emailAddress
+    startDate: budgetStartDate
   }
 }
 
