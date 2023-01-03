@@ -3,12 +3,7 @@ using HealthCheckr.Nutrition.Common.FitbitResponses;
 using HealthCheckr.Nutrition.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HealthCheckr.Nutrition.Services
 {

@@ -1,18 +1,18 @@
-using HealthCheckr.Nutrition.Repository.Interfaces;
+using Azure.Identity;
+using Azure.Messaging.ServiceBus;
+using Azure.Security.KeyVault.Secrets;
+using HealthCheckr.Nutrition.Common;
 using HealthCheckr.Nutrition.Repository;
-using HealthCheckr.Nutrition.Services.Interfaces;
+using HealthCheckr.Nutrition.Repository.Interfaces;
 using HealthCheckr.Nutrition.Services;
+using HealthCheckr.Nutrition.Services.Interfaces;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Polly.Extensions.Http;
 using Polly;
-using Microsoft.Extensions.Configuration.AzureAppConfiguration;
-using Azure.Identity;
-using HealthCheckr.Nutrition.Common;
-using Azure.Security.KeyVault.Secrets;
-using Azure.Messaging.ServiceBus;
-using Microsoft.Azure.Cosmos;
+using Polly.Extensions.Http;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()

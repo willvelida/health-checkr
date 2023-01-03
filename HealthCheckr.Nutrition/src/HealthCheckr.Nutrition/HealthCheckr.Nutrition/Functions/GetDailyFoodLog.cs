@@ -1,5 +1,3 @@
-using System;
-using System.Security.Cryptography;
 using HealthCheckr.Nutrition.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -14,9 +12,9 @@ namespace HealthCheckr.Nutrition.Functions
 
         public GetDailyFoodLog(IFitbitService fitbitService, IFoodService foodService, ILogger<GetDailyFoodLog> logger)
         {
-            _fitbitService= fitbitService;
-            _foodService= foodService;
-            _logger= logger;
+            _fitbitService = fitbitService;
+            _foodService = foodService;
+            _logger = logger;
         }
 
         [Function(nameof(GetDailyFoodLog))]

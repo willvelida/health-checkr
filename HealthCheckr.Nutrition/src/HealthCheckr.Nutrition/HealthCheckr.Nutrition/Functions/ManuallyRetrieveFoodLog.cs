@@ -1,4 +1,3 @@
-using System.Net;
 using HealthCheckr.Nutrition.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;

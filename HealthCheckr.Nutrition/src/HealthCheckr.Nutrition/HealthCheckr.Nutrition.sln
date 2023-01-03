@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Nutrition", "HealthCheckr.Nutrition\HealthCheckr.Nutrition.csproj", "{C18FCFEA-7248-4AD3-B5D9-7259F3A57CA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Nutrition", "HealthCheckr.Nutrition\HealthCheckr.Nutrition.csproj", "{C18FCFEA-7248-4AD3-B5D9-7259F3A57CA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Nutrition.Common", "HealthCheckr.Nutrition.Common\HealthCheckr.Nutrition.Common.csproj", "{34E0D564-B693-4C3C-A85F-560733AEADBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Nutrition.Common", "HealthCheckr.Nutrition.Common\HealthCheckr.Nutrition.Common.csproj", "{34E0D564-B693-4C3C-A85F-560733AEADBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Nutrition.Repository", "HealthCheckr.Nutrition.Repository\HealthCheckr.Nutrition.Repository.csproj", "{D71671F2-5A6E-4425-8809-70100F11C671}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Nutrition.Repository", "HealthCheckr.Nutrition.Repository\HealthCheckr.Nutrition.Repository.csproj", "{D71671F2-5A6E-4425-8809-70100F11C671}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Nutrition.Services", "HealthCheckr.Nutrition.Services\HealthCheckr.Nutrition.Services.csproj", "{4A09C16D-B9CF-4E3B-814B-EA48264E6D9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Nutrition.Services", "HealthCheckr.Nutrition.Services\HealthCheckr.Nutrition.Services.csproj", "{4A09C16D-B9CF-4E3B-814B-EA48264E6D9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Nutrition.Services.UnitTests", "HealthCheckr.Nutrition.Services.UnitTests\HealthCheckr.Nutrition.Services.UnitTests.csproj", "{5D44D964-22FB-44C1-8690-8DF2043008D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{4A09C16D-B9CF-4E3B-814B-EA48264E6D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A09C16D-B9CF-4E3B-814B-EA48264E6D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A09C16D-B9CF-4E3B-814B-EA48264E6D9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D44D964-22FB-44C1-8690-8DF2043008D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D44D964-22FB-44C1-8690-8DF2043008D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D44D964-22FB-44C1-8690-8DF2043008D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D44D964-22FB-44C1-8690-8DF2043008D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

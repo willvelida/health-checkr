@@ -4,11 +4,6 @@ using HealthCheckr.Nutrition.Repository.Interfaces;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HealthCheckr.Nutrition.Repository
 {
@@ -23,7 +18,7 @@ namespace HealthCheckr.Nutrition.Repository
         {
             _settings = options.Value;
             _cosmosClient = cosmosClient;
-            _container = _cosmosClient.GetContainer(_settings.DatabaseName, _settings.ContainerName);
+            _container = _cosmosClient.GetContainer(_settings.DatabaseName, _settings.NutritionContainerName);
             _logger = logger;
         }
 
@@ -36,7 +31,7 @@ namespace HealthCheckr.Nutrition.Repository
                     EnableContentResponseOnWrite = false
                 };
 
-                await _container.CreateItemAsync(foodEnvelope, new PartitionKey(foodEnvelope.DocumentType), itemRequestOptions);
+                await _container.CreateItemAsync(foodEnvelope, new PartitionKey(foodEnvelope.Date), itemRequestOptions);
             }
             catch (Exception ex)
             {
