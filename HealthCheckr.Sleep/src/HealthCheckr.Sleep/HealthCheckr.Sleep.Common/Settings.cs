@@ -7,5 +7,6 @@
         public string BreathingRateQueueName { get; set; }
         public string DatabaseName { get; set; }
         public string ContainerName { get; set; }
+        public string SleepContainerName { get; set; }
     }
 }

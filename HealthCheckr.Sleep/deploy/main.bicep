@@ -22,6 +22,9 @@ param keyVaultName string
 @description('The name of the Cosmos DB account that this Function will use')
 param cosmosDbAccountName string
 
+@description('The name of the database in Cosmos DB that the created container will use')
+param cosmosDatabaseName string
+
 @description('The name of the Service Bus Namespace that this Function will use')
 param serviceBusNamespace string
 
@@ -40,6 +43,7 @@ var tags = {
 }
 
 var sleepQueueName = 'sleepqueue'
+var sleepTableName = 'Sleep'
 var sp02queueName = 'sp02queue'
 var breathingRateQueueName = 'breathingratequeue'
 var serviceBusDataReceiverRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions','4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
@@ -242,6 +246,16 @@ resource serviceBusSenderRole 'Microsoft.Authorization/roleAssignments@2020-08-0
     principalId: functionApp.identity.principalId
     roleDefinitionId: serviceBusDataSenderRole
     principalType: 'ServicePrincipal'
+  }
+}
+
+module sleepContainer 'modules/cosmos-container.bicep' = {
+  name: 'sleep-container'
+  params: {
+    appConfigName: appConfig.name
+    containerName: sleepTableName
+    databaseName: cosmosDatabaseName
+    cosmosDbAccountName: cosmosDbAccountName
   }
 }
 

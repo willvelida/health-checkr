@@ -10,7 +10,8 @@ namespace HealthCheckr.Sleep.Repository
     public class CosmosDbRepository : ICosmosDbRepository
     {
         private readonly CosmosClient _cosmosClient;
-        private readonly Container _container;
+        private readonly Container _recordContainer;
+        private readonly Container _sleepContainer;
         private readonly Settings _settings;
         private readonly ILogger<CosmosDbRepository> _logger;
 
@@ -18,7 +19,8 @@ namespace HealthCheckr.Sleep.Repository
         {
             _settings = options.Value;
             _cosmosClient = cosmosClient;
-            _container = _cosmosClient.GetContainer(_settings.DatabaseName, _settings.ContainerName);
+            _recordContainer = _cosmosClient.GetContainer(_settings.DatabaseName, _settings.ContainerName);
+            _sleepContainer = _cosmosClient.GetContainer(_settings.DatabaseName, _settings.SleepContainerName);
             _logger = logger;
         }
 
@@ -31,7 +33,7 @@ namespace HealthCheckr.Sleep.Repository
                     EnableContentResponseOnWrite = false
                 };
 
-                await _container.CreateItemAsync(breatingRateEnvelope, new PartitionKey(breatingRateEnvelope.DocumentType), itemRequestOptions);
+                await _recordContainer.CreateItemAsync(breatingRateEnvelope, new PartitionKey(breatingRateEnvelope.DocumentType), itemRequestOptions);
             }
             catch (Exception ex)
             {
@@ -49,7 +51,7 @@ namespace HealthCheckr.Sleep.Repository
                     EnableContentResponseOnWrite = false
                 };
 
-                await _container.CreateItemAsync(sleepEnvelope, new PartitionKey(sleepEnvelope.DocumentType), itemRequestOptions);
+                await _sleepContainer.CreateItemAsync(sleepEnvelope, new PartitionKey(sleepEnvelope.Date), itemRequestOptions);
             }
             catch (Exception ex)
             {
@@ -67,7 +69,7 @@ namespace HealthCheckr.Sleep.Repository
                     EnableContentResponseOnWrite = false
                 };
 
-                await _container.CreateItemAsync(sp02Envelope, new PartitionKey(sp02Envelope.DocumentType), itemRequestOptions);
+                await _recordContainer.CreateItemAsync(sp02Envelope, new PartitionKey(sp02Envelope.DocumentType), itemRequestOptions);
             }
             catch (Exception ex)
             {
