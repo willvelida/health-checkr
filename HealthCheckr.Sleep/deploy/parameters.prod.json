@@ -19,6 +19,9 @@
         },
         "cosmosDbAccountName": {
             "value": "cosmosdb-healthcheckr-prod"
+        },   
+        "cosmosDatabaseName": {
+            "value": "HealthCheckrDB"
         },
         "serviceBusNamespace": {
             "value": "sb-healthcheckr-prod"
