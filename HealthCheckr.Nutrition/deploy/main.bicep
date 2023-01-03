@@ -235,6 +235,7 @@ module nutrititionContainer 'modules/cosmos-container.bicep' = {
     appConfigName: appConfig.name
     containerName: nutritionTableName
     databaseName: cosmosDatabaseName
+    cosmosDbAccountName: cosmosDbAccountName
   }
 }
 

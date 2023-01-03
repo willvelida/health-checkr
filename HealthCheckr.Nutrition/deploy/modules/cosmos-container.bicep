@@ -1,6 +1,9 @@
 @description('The name of the container to create for the Cosmos DB account')
 param containerName string
 
+@description('The name of the Cosmos DB account to deploy the container to')
+param cosmosDbAccountName string
+
 @description('The name of the database that will hold the container')
 param databaseName string
 
@@ -11,8 +14,13 @@ resource appConfig 'Microsoft.AppConfiguration/configurationStores@2022-05-01' e
   name: appConfigName
 }
 
+resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
+  name: cosmosDbAccountName
+}
+
 resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-08-15' existing = {
   name: databaseName
+  parent: cosmosDb
 }
 
 resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-08-15' = {
