@@ -249,8 +249,8 @@ module activityContainer 'modules/cosmos-container.bicep' = {
   params: {
     appConfigName: appConfig.name
     containerName: activityTableName
-    cosmosDbAccountName: cosmosDatabaseName
-    databaseName: cosmosDbAccountName
+    cosmosDbAccountName: cosmosDbAccountName
+    databaseName: cosmosDatabaseName
   }
 }
 
