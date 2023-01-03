@@ -10,7 +10,8 @@ namespace HealthCheckr.Activity.Repository
     public class CosmosDbRepository : ICosmosDbRepository
     {
         private readonly CosmosClient _cosmosClient;
-        private readonly Container _container;
+        private readonly Container _recordContainer;
+        private readonly Container _activityContainer;
         private readonly Settings _settings;
         private readonly ILogger<CosmosDbRepository> _logger;
 
@@ -18,7 +19,8 @@ namespace HealthCheckr.Activity.Repository
         {
             _settings = options.Value;
             _cosmosClient = cosmosClient;
-            _container = _cosmosClient.GetContainer(_settings.DatabaseName, _settings.ContainerName);
+            _recordContainer = _cosmosClient.GetContainer(_settings.DatabaseName, _settings.ContainerName);
+            _activityContainer = _cosmosClient.GetContainer(_settings.DatabaseName, _settings.ActivityContainerName);
             _logger = logger;
         }
 
@@ -31,7 +33,7 @@ namespace HealthCheckr.Activity.Repository
                     EnableContentResponseOnWrite = false
                 };
 
-                await _container.CreateItemAsync(activityEnvelope, new PartitionKey(activityEnvelope.DocumentType), itemRequestOptions);
+                await _activityContainer.CreateItemAsync(activityEnvelope, new PartitionKey(activityEnvelope.Date), itemRequestOptions);
             }
             catch (Exception ex)
             {
@@ -49,7 +51,7 @@ namespace HealthCheckr.Activity.Repository
                     EnableContentResponseOnWrite = false
                 };
 
-                await _container.CreateItemAsync(heartRateEnvelope, new PartitionKey(heartRateEnvelope.DocumentType), itemRequestOptions);
+                await _recordContainer.CreateItemAsync(heartRateEnvelope, new PartitionKey(heartRateEnvelope.DocumentType), itemRequestOptions);
             }
             catch (Exception ex)
             {
