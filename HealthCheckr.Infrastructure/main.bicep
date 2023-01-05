@@ -133,6 +133,6 @@ module sql 'modules/sql-server.bicep' = {
     sqlDBName: databaseName
     location: location
     tags: tags
-    keyVaultName: keyVault.name
+    keyVaultName: keyVault.outputs.keyVaultName
   }
 }
