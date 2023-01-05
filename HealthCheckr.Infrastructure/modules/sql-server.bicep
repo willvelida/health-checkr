@@ -11,10 +11,20 @@ param location string = resourceGroup().location
 param administratorLogin string
 
 @description('The administrator password of the SQL logical server.')
+@secure()
 param administratorLoginPassword string
+
+@description('The Key Vault to store the SQL secrets in')
+param keyVaultName string
 
 @description('The tags applied to this SQL Server')
 param tags object
+
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
+}
+
+var sqlConnectionSecretName = 'SqlConnectionString'
 
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: serverName
@@ -40,3 +50,10 @@ resource sqlDB 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   }
 }
 
+resource sqlDBConnectionSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: sqlConnectionSecretName
+  parent: keyVault
+  properties: {
+    value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDB.name};Persist Security Info=False;User Id=${administratorLogin};Password=${administratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+  }
+}
