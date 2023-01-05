@@ -28,6 +28,15 @@ param appConfigurationName string
 @description('The name of the Service Bus Namespace that will be deployed')
 param serviceBusNamespaceName string
 
+@description('The name of the SQL Server that will be deployed')
+param sqlServerName string
+
+@description('The administrator username of the SQL logical server')
+param sqlAdminLogin string
+
+@description('The administrator password of the SQL logical server')
+param sqlAdminPassword string
+
 @description('The email address to use for the budget')
 param emailAddress string
 
@@ -112,5 +121,17 @@ module serviceBus 'modules/service-bus.bicep' = {
     serviceBusNamespaceName: serviceBusNamespaceName
     tags: tags
     location: location
+  }
+}
+
+module sql 'modules/sql-server.bicep' = {
+  name: 'sql'
+  params: {
+    administratorLogin: sqlAdminLogin
+    administratorLoginPassword: sqlAdminPassword
+    serverName: sqlServerName
+    sqlDBName: databaseName
+    location: location
+    tags: tags
   }
 }

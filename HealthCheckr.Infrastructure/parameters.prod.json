@@ -28,6 +28,9 @@
         },
         "serviceBusNamespaceName": {
             "value": "sb-healthcheckr-prod"
+        },
+        "sqlServerName": {
+            "value": "sql-healthcheckr-prod"
         }
     }
 }
