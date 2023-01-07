@@ -57,3 +57,12 @@ resource sqlDBConnectionSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = 
     value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDB.name};Persist Security Info=False;User Id=${administratorLogin};Password=${administratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
   }
 }
+
+resource allowAzureFirewallRule 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = {
+  name: 'AllowAllWindowsAzureIps'
+ parent: sqlServer
+ properties: {
+  startIpAddress: '0.0.0.0'
+  endIpAddress: '0.0.0.0'
+ } 
+}
