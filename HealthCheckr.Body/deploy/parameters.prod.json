@@ -17,9 +17,6 @@
         "functionAppName": {
             "value": "func-healthcheckrbody-prod"
         },
-        "cosmosDbAccountName": {
-            "value": "cosmosdb-healthcheckr-prod"
-        },
         "serviceBusNamespace": {
             "value": "sb-healthcheckr-prod"
         },
