@@ -1,6 +1,6 @@
 CREATE TABLE [dbo].[Weight]
 (
-  [Id] INT NOT NULL PRIMARY KEY,
+  [Id] INT IDENTITY NOT NULL PRIMARY KEY,
   [BmiValue] DECIMAL(5,2) NOT NULL,
   [Date] DATE NOT NULL,
   [FatPercentage] DECIMAL(5,2) NOT NULL,

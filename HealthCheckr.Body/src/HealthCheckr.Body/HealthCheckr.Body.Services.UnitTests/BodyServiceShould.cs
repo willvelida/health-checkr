@@ -119,7 +119,7 @@ namespace HealthCheckr.Body.Services.UnitTests
         {
             // ARRANGE
             var fixture = new Fixture();
-            var weightResponse = fixture.Create<WeightEnvelope>();
+            var weightResponse = fixture.Create<WeightResponseObject>();
             var queueName = "bodyqueue";
 
             _serviceBusMock
@@ -143,7 +143,7 @@ namespace HealthCheckr.Body.Services.UnitTests
         {
             // ARRANGE
             var fixture = new Fixture();
-            var weightResponse = fixture.Create<WeightEnvelope>();
+            var weightResponse = fixture.Create<WeightResponseObject>();
             var queueName = "bodyqueue";
 
             _serviceBusMock
