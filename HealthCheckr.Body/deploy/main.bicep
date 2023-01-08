@@ -29,7 +29,16 @@ param lastDeployed string = utcNow()
 param appConfigName string
 
 @description('The name of the SQL Server that this function app will use')
-param sqlConnection string
+param sqlServerName string
+
+@description('The name of the SQL database')
+param sqlDatabaseName string
+
+@description('The administrator username of the SQL logical server')
+param sqlAdminLogin string
+
+@description('The administrator password of the SQL logical server')
+param sqlAdminPassword string
 
 var functionRuntime = 'dotnet-isolated'
 var tags = {
@@ -60,6 +69,10 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: keyVaultName
+}
+
+resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
+  name: sqlServerName
 }
 
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
@@ -159,7 +172,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         }
         {
           name: 'SqlConnectionString'
-          value: sqlConnection
+          value: 'Server=tcp:${sqlServer.name}${environment().suffixes.sqlServerHostname},1433;Initial Catalog=${sqlDatabaseName};Persist Security Info=False;User ID=${sqlAdminLogin};Password=${sqlAdminPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
         }
         {
           name: 'WEBSITE_RUN_FROM_PACKAGE'

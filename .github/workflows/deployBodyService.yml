@@ -43,7 +43,7 @@ jobs:
           deploymentName: ${{ github.run_number }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./HealthCheckr.Body/deploy/main.bicep
-          parameters: ./HealthCheckr.Body/deploy/parameters.prod.json sqlConnection=${{ secrets.AZURE_SQL_CONNECTION }}
+          parameters: ./HealthCheckr.Body/deploy/parameters.prod.json sqlAdminLogin=${{ secrets.SQL_ADMIN }} sqlAdminPassword=${{ secrets.SQL_PASSWORD }}
           deploymentMode: Validate
 
   preview:
@@ -59,7 +59,7 @@ jobs:
         name: Run what-if
         with:
           inlineScript: |
-            az deployment group what-if --resource-group ${{ secrets.AZURE_RG }} --template-file ./HealthCheckr.Body/deploy/main.bicep --parameters ./HealthCheckr.Body/deploy/parameters.prod.json sqlConnection=${{ secrets.AZURE_SQL_CONNECTION }}
+            az deployment group what-if --resource-group ${{ secrets.AZURE_RG }} --template-file ./HealthCheckr.Body/deploy/main.bicep --parameters ./HealthCheckr.Body/deploy/parameters.prod.json sqlAdminLogin=${{ secrets.SQL_ADMIN }} sqlAdminPassword=${{ secrets.SQL_PASSWORD }}
   
   deploy-infra:
     runs-on: ubuntu-latest
@@ -77,7 +77,7 @@ jobs:
         with:
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./HealthCheckr.Body/deploy/main.bicep
-          parameters: ./HealthCheckr.Body/deploy/parameters.prod.json sqlConnection=${{ secrets.AZURE_SQL_CONNECTION }}
+          parameters: ./HealthCheckr.Body/deploy/parameters.prod.json sqlAdminLogin=${{ secrets.SQL_ADMIN }} sqlAdminPassword=${{ secrets.SQL_PASSWORD }}
           failOnStdErr: false
 
   deploy-sql-tables:
