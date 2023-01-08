@@ -27,6 +27,7 @@ jobs:
         with:
           connection-string: ${{ secrets.AZURE_SQL_CONNECTION }}
           path: './HealthCheckr.Body/src/HealthCheckr.Body/HealthCheckr.Body.Sql/HealthCheckr.Body.Sql/HealthCheckr.Body.Sql.sqlproj'
+          action: 'publish'
           build-arguments: '-c Release'
 
   
