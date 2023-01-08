@@ -61,6 +61,7 @@ jobs:
         with:
           inlineScript: |
             az deployment group what-if --resource-group ${{ secrets.AZURE_RG }} --template-file ./HealthCheckr.Body/deploy/main.bicep --parameters ./HealthCheckr.Body/deploy/parameters.prod.json
+  
   deploy-infra:
     runs-on: ubuntu-latest
     environment: Production
@@ -79,8 +80,25 @@ jobs:
           template: ./HealthCheckr.Body/deploy/main.bicep
           parameters: ./HealthCheckr.Body/deploy/parameters.prod.json
           failOnStdErr: false
-  build-function:
+
+  deploy-sql-tables:
     needs: deploy-infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './HealthCheckr.Body/src/HealthCheckr.Body/HealthCheckr.Body.Sql'
+    steps:
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@v2
+      - name: 'Deploy Azure SQL Tables'
+        uses: azure/sql-action@v2
+        with:
+          connection-string: ${{ secrets.AZURE_SQL_CONNECTION }}
+          path: './HealthCheckr.Body.Sql/HealthCheckr.Body.Sql.sqlproj'
+          build-arguments: '-c Release'
+
+  build-function:
+    needs: deploy-sql-tables
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -111,22 +129,6 @@ jobs:
       with:
         name: body-function
         path: ${{ env.OUTPUT_PATH }}
-
-  deploy-sql-tables:
-    needs: build-function
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: './HealthCheckr.Body/src/HealthCheckr.Body.Sql/'
-    steps:
-      - name: 'Checkout Github Action'
-        uses: actions/checkout@v2
-      - name: 'Deploy Azure SQL Tables'
-        uses: azure/sql-action@v2
-        with:
-          connection-string: ${{ secrets.AZURE_SQL_CONNECTION }}
-          path: './HealthCheckr.Body.Sql/HealthCheckr.Body.Sql.sqlproj'
-          build-arguments: '-c Release'
 
   deploy-function:
     needs: build-function
