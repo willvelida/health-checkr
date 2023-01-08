@@ -16,8 +16,72 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sign into Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: actions/checkout@v2
+      - name: Run Bicep Linter
+        run: az bicep build --file ./HealthCheckr.Body/deploy/main.bicep
+  validate:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: azure/login@v1
+        name: Sign in to Azure
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - uses: azure/arm-deploy@v1
+        name: Run preflight validation
+        with:
+          deploymentName: ${{ github.run_number }}
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          template: ./HealthCheckr.Body/deploy/main.bicep
+          parameters: ./HealthCheckr.Body/deploy/parameters.prod.json sqlConnection=${{ secrets.AZURE_SQL_CONNECTION }}
+          deploymentMode: Validate
+
+  preview:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v2
+      - uses: azure/login@v1
+        name: Sign in to Azure
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - uses: Azure/cli@v1
+        name: Run what-if
+        with:
+          inlineScript: |
+            az deployment group what-if --resource-group ${{ secrets.AZURE_RG }} --template-file ./HealthCheckr.Body/deploy/main.bicep --parameters ./HealthCheckr.Body/deploy/parameters.prod.json sqlConnection=${{ secrets.AZURE_SQL_CONNECTION }}
   
+  deploy-infra:
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: preview
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+      - name: Deploy Bicep File
+        uses: azure/arm-deploy@v1
+        with:
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          template: ./HealthCheckr.Body/deploy/main.bicep
+          parameters: ./HealthCheckr.Body/deploy/parameters.prod.json sqlConnection=${{ secrets.AZURE_SQL_CONNECTION }}
+          failOnStdErr: false
+
   deploy-sql-tables:
+    needs: deploy-infra
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout Github Action'
@@ -27,7 +91,62 @@ jobs:
         with:
           connection-string: ${{ secrets.AZURE_SQL_CONNECTION }}
           path: './HealthCheckr.Body/src/HealthCheckr.Body/HealthCheckr.Body.Sql/HealthCheckr.Body.Sql/HealthCheckr.Body.Sql.sqlproj'
-          action: 'publish'
           build-arguments: '-c Release'
+          action: 'publish'
 
-  
+  build-function:
+    needs: deploy-sql-tables
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './HealthCheckr.Body/src/HealthCheckr.Body/'
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v2
+      
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 'Install dependencies'
+      run: dotnet restore
+
+    - name: 'Build project'
+      run: dotnet build --no-restore
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory ${{ env.COVERAGE_PATH }}
+    
+    - name: Publish Functions
+      run: dotnet publish ./HealthCheckr.Body/HealthCheckr.Body.csproj --configuration Release --output ${{ env.OUTPUT_PATH }}
+      
+    - name: Package Functions
+      uses: actions/upload-artifact@v1
+      with:
+        name: body-function
+        path: ${{ env.OUTPUT_PATH }}
+
+  deploy-function:
+    needs: build-function
+    runs-on: ubuntu-latest
+    env: 
+      FUNC_APP_NAME: func-healthcheckrbody-prod
+    
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: body-function
+          path: ${{ env.OUTPUT_PATH }}
+        
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+      - name: Deploy Function to Azure
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.FUNC_APP_NAME }}
+          package: ${{ env.OUTPUT_PATH }}

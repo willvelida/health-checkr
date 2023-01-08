@@ -1,4 +1,5 @@
 using AutoFixture;
+using AutoMapper;
 using Azure.Messaging.ServiceBus;
 using FluentAssertions;
 using HealthCheckr.Body.Common.Envelopes;
@@ -13,7 +14,8 @@ namespace HealthCheckr.Body.Services.UnitTests
     {
         private Mock<ServiceBusClient> _serviceBusMock;
         private Mock<ServiceBusSender> _serviceBusSenderMock;
-        private Mock<ICosmosDbRepository> _cosmosRepoMock;
+        private Mock<IMapper> _mapperMock;
+        private Mock<IBodyRepository> _bodyRepoMock;
         private Mock<ILogger<BodyService>> _loggerMock;
 
         private BodyService _sut;
@@ -22,10 +24,14 @@ namespace HealthCheckr.Body.Services.UnitTests
         {
             _serviceBusMock = new Mock<ServiceBusClient>();
             _serviceBusSenderMock = new Mock<ServiceBusSender>();
-            _cosmosRepoMock= new Mock<ICosmosDbRepository>();
+            _mapperMock = new Mock<IMapper>();
+            _bodyRepoMock = new Mock<IBodyRepository>();
             _loggerMock = new Mock<ILogger<BodyService>>();
 
-            _sut = new BodyService(_serviceBusMock.Object, _cosmosRepoMock.Object, _loggerMock.Object);
+            _mapperMock.Setup(x => x.Map(It.IsAny<CardioResponseObject>(), It.IsAny<V02Record>())).Verifiable();
+            _mapperMock.Setup(x => x.Map(It.IsAny<Weight>(), It.IsAny<WeightRecord>())).Verifiable();
+
+            _sut = new BodyService(_serviceBusMock.Object, _mapperMock.Object, _bodyRepoMock.Object, _loggerMock.Object);
         }
 
         [Fact]
@@ -36,8 +42,8 @@ namespace HealthCheckr.Body.Services.UnitTests
             var weight = fixture.Create<Weight>();
             weight.date = "2022-12-31";
 
-            _cosmosRepoMock
-                .Setup(x => x.CreateWeightDocument(It.IsAny<WeightEnvelope>()))
+            _bodyRepoMock
+                .Setup(x => x.AddWeightRecord(It.IsAny<WeightRecord>()))
                 .Returns(Task.CompletedTask);
 
             // ACT
@@ -45,7 +51,7 @@ namespace HealthCheckr.Body.Services.UnitTests
 
             // ASSERT
             await bodyServiceAction.Should().NotThrowAsync();
-            _cosmosRepoMock.Verify(x => x.CreateWeightDocument(It.IsAny<WeightEnvelope>()), Times.Once);
+            _bodyRepoMock.Verify(x => x.AddWeightRecord(It.IsAny<WeightRecord>()), Times.Once);
         }
 
         [Fact]
@@ -56,8 +62,8 @@ namespace HealthCheckr.Body.Services.UnitTests
             var cardio = fixture.Create<CardioResponseObject>();
             cardio.cardioScore[0].dateTime = "2022-12-31";
 
-            _cosmosRepoMock
-                .Setup(x => x.CreateV02MaxDocument(It.IsAny<CardioEnvelope>()))
+            _bodyRepoMock
+                .Setup(x => x.AddV02Record(It.IsAny<V02Record>()))
                 .Returns(Task.CompletedTask);
 
             // ACT
@@ -65,7 +71,7 @@ namespace HealthCheckr.Body.Services.UnitTests
 
             // ASSERT
             await bodyServiceAction.Should().NotThrowAsync();
-            _cosmosRepoMock.Verify(x => x.CreateV02MaxDocument(It.IsAny<CardioEnvelope>()), Times.Once);
+            _bodyRepoMock.Verify(x => x.AddV02Record(It.IsAny<V02Record>()), Times.Once);
         }
 
         [Fact]
@@ -76,8 +82,8 @@ namespace HealthCheckr.Body.Services.UnitTests
             var weight = fixture.Create<Weight>();
             weight.date = "2022-12-31";
 
-            _cosmosRepoMock
-                .Setup(x => x.CreateWeightDocument(It.IsAny<WeightEnvelope>()))
+            _bodyRepoMock
+                .Setup(x => x.AddWeightRecord(It.IsAny<WeightRecord>()))
                 .ThrowsAsync(new Exception("Mock Failure"));
 
             // ACT
@@ -96,8 +102,8 @@ namespace HealthCheckr.Body.Services.UnitTests
             var cardio = fixture.Create<CardioResponseObject>();
             cardio.cardioScore[0].dateTime = "2022-12-31";
 
-            _cosmosRepoMock
-                .Setup(x => x.CreateV02MaxDocument(It.IsAny<CardioEnvelope>()))
+            _bodyRepoMock
+                .Setup(x => x.AddV02Record(It.IsAny<V02Record>()))
                 .ThrowsAsync(new Exception("Mock Failure"));
 
             // ACT

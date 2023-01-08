@@ -1,11 +1,10 @@
-﻿using Azure.Messaging.ServiceBus;
-using HealthCheckr.Body.Common;
+﻿using AutoMapper;
+using Azure.Messaging.ServiceBus;
 using HealthCheckr.Body.Common.Envelopes;
 using HealthCheckr.Body.Common.FitbitResponses;
 using HealthCheckr.Body.Repository.Interfaces;
 using HealthCheckr.Body.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace HealthCheckr.Body.Services
@@ -13,13 +12,15 @@ namespace HealthCheckr.Body.Services
     public class BodyService : IBodyService
     {
         private readonly ServiceBusClient _serviceBusClient;
-        private readonly ICosmosDbRepository _cosmosDbRepository;
+        private readonly IMapper _mapper;
+        private readonly IBodyRepository _bodyRepository;
         private readonly ILogger<BodyService> _logger;
 
-        public BodyService(ServiceBusClient serviceBusClient, ICosmosDbRepository cosmosDbRepository, ILogger<BodyService> logger)
+        public BodyService(ServiceBusClient serviceBusClient, IMapper mapper, IBodyRepository bodyRepository, ILogger<BodyService> logger)
         {
             _serviceBusClient = serviceBusClient;
-            _cosmosDbRepository = cosmosDbRepository;
+            _mapper = mapper;
+            _bodyRepository = bodyRepository;
             _logger = logger;
         }
 
@@ -27,15 +28,10 @@ namespace HealthCheckr.Body.Services
         {
             try
             {
-                var cardioEnvelope = new CardioEnvelope
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Cardio = cardioResponseObject,
-                    Date = cardioResponseObject.cardioScore[0].dateTime,
-                    DocumentType = "V02"
-                };
+                var vo2Record = new V02Record();
+                _mapper.Map(cardioResponseObject, vo2Record);
 
-                await _cosmosDbRepository.CreateV02MaxDocument(cardioEnvelope);
+                await _bodyRepository.AddV02Record(vo2Record);
             }
             catch (Exception ex)
             {
@@ -48,15 +44,10 @@ namespace HealthCheckr.Body.Services
         {
             try
             {
-                var weightEnvelope = new WeightEnvelope
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Weight = weight,
-                    DocumentType = "Weight",
-                    Date = weight.date
-                };
+                var weightRecord = new WeightRecord();
+                _mapper.Map(weight, weightRecord);
 
-                await _cosmosDbRepository.CreateWeightDocument(weightEnvelope);
+                await _bodyRepository.AddWeightRecord(weightRecord);
             }
             catch (Exception ex)
             {

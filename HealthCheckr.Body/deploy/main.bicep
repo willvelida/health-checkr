@@ -19,9 +19,6 @@ param appInsightsName string
 @description('The name of the key vault that we will create Access Policies for')
 param keyVaultName string
 
-@description('The name of the Cosmos DB account that this Function will use')
-param cosmosDbAccountName string
-
 @description('The name of the Service Bus Namespace that this Function will use')
 param serviceBusNamespace string
 
@@ -30,6 +27,9 @@ param lastDeployed string = utcNow()
 
 @description('The name of the App Config instance that this function will use')
 param appConfigName string
+
+@description('The name of the SQL Server that this function app will use')
+param sqlConnection string
 
 var functionRuntime = 'dotnet-isolated'
 var tags = {
@@ -60,10 +60,6 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: keyVaultName
-}
-
-resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2022-02-15-preview' existing = {
-  name: cosmosDbAccountName
 }
 
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
@@ -146,10 +142,6 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: '~4'
         }
         {
-          name: 'CosmosDbEndpoint'
-          value: cosmosDb.properties.documentEndpoint
-        }
-        {
           name: 'ServiceBusConnection__fullyQualifiedNamespace'
           value: '${serviceBus.name}.servicebus.windows.net'
         }
@@ -164,6 +156,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         {
           name: 'AzureAppConfigEndpoint'
           value: appConfig.properties.endpoint
+        }
+        {
+          name: 'SqlConnectionString'
+          value: sqlConnection
         }
         {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
@@ -237,13 +233,5 @@ resource serviceBusSenderRole 'Microsoft.Authorization/roleAssignments@2020-08-0
     principalId: functionApp.identity.principalId
     roleDefinitionId: serviceBusDataSenderRole
     principalType: 'ServicePrincipal'
-  }
-}
-
-module sqlRoleAssignment 'modules/sql-role-assignment.bicep' = {
-  name: 'sqlRoleAssignment'
-  params: {
-    cosmosDbAccountName: cosmosDb.name
-    functionAppPrincipalId: functionApp.identity.principalId
   }
 }
