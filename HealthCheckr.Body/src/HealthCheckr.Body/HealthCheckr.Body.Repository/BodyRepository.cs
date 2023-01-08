@@ -7,9 +7,9 @@ namespace HealthCheckr.Body.Repository
     public class BodyRepository : IBodyRepository
     {
         private readonly BodyContext _context;
-        private readonly ILogger _logger;
+        private readonly ILogger<BodyRepository> _logger;
 
-        public BodyRepository(BodyContext context, ILogger logger)
+        public BodyRepository(BodyContext context, ILogger<BodyRepository> logger)
         {
             _context = context;
             _logger = logger;
