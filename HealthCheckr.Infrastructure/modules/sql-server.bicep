@@ -45,8 +45,8 @@ resource sqlDB 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   parent: sqlServer
   tags: tags
   sku: {
-    name: 'Free'
-    tier: 'Free'
+    name: 'Basic'
+    tier: 'Basic'
   }
 }
 
@@ -54,7 +54,7 @@ resource sqlDBConnectionSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = 
   name: sqlConnectionSecretName
   parent: keyVault
   properties: {
-    value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDB.name};Persist Security Info=False;User Id=${administratorLogin};Password=${administratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    value: 'Server=tcp:${sqlServer.name}${environment().suffixes.sqlServerHostname},1433;Initial Catalog=${sqlDBName};Persist Security Info=False;User ID=${administratorLogin};Password=${administratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
   }
 }
 
