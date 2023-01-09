@@ -1,5 +1,5 @@
 CREATE TABLE [dbo].[SleepSummary] (
-    [Id]                 INT  IDENTITY NOT NULL PRIMARY KEY CLUSTERED ([Id] ASC),
+    [Id]                 INT  IDENTITY NOT NULL PRIMARY KEY,
     [TotalMinutesAsleep] INT  NOT NULL,
     [TotalSleepRecords]  INT  NOT NULL,
     [TotalTimeInBed]     INT  NOT NULL,
@@ -8,8 +8,7 @@ CREATE TABLE [dbo].[SleepSummary] (
     [REMSleep]           INT  NOT NULL,
     [AwakeMinutes]       INT  NOT NULL,
     [Date]               DATE NOT NULL,
-);
-GO;
+)
 
 CREATE TABLE [dbo].[Sp02] (
   [Id] INT IDENTITY NOT NULL PRIMARY KEY,
@@ -18,14 +17,12 @@ CREATE TABLE [dbo].[Sp02] (
   [MinValue] DECIMAL(5,2) NOT NULL,
   [MaxValue] DECIMAL(5,2) NOT NULL
 )
-GO;
 
 CREATE TABLE [dbo].[BreathingRate] (
   [Id] INT IDENTITY NOT NULL PRIMARY KEY,
   [Date] DATE NOT NULL,
   [BreathingRate] DECIMAL(5,2) NOT NULL
 )
-GO;
 
 CREATE TABLE [dbo].[Sleep]
 (
@@ -42,8 +39,7 @@ CREATE TABLE [dbo].[Sleep]
   [RestlessCount] INT NOT NULL,
   [RestlessDuration] INT NOT NULL,
   [TimeInBed] INT NOT NULL,
-  CONSTRAINT [SleepSummaryId] FOREIGN KEY ([Id]) REFERENCES [dbo].[SleepSummary] ([Id]),
-  CONSTRAINT [Sp02Id] FOREIGN KEY ([Id]) REFERENCES [dbo].[Sp02] ([Id]),
-  CONSTRAINT [BreathingRateId] FOREIGN KEY ([Id]) REFERENCES [dbo].[BreathingRate] ([Id])
+  [SleepSummaryId] INT FOREIGN KEY REFERENCES [dbo].[SleepSummary] ([Id]),
+  [Sp02Id] INT FOREIGN KEY REFERENCES [dbo].[Sp02] ([Id]),
+  [BreathingRateId] INT FOREIGN KEY REFERENCES [dbo].[BreathingRate] ([Id])
 )
-GO;
