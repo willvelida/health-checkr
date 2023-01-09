@@ -9,6 +9,7 @@ CREATE TABLE [dbo].[SleepSummary] (
     [AwakeMinutes]       INT  NOT NULL,
     [Date]               DATE NOT NULL,
 )
+GO;
 
 CREATE TABLE [dbo].[Sp02] (
   [Id] INT IDENTITY NOT NULL PRIMARY KEY,
@@ -17,12 +18,14 @@ CREATE TABLE [dbo].[Sp02] (
   [MinValue] DECIMAL(5,2) NOT NULL,
   [MaxValue] DECIMAL(5,2) NOT NULL
 )
+GO;
 
 CREATE TABLE [dbo].[BreathingRate] (
   [Id] INT IDENTITY NOT NULL PRIMARY KEY,
   [Date] DATE NOT NULL,
   [BreathingRate] DECIMAL(5,2) NOT NULL
 )
+GO;
 
 CREATE TABLE [dbo].[Sleep]
 (
@@ -43,3 +46,4 @@ CREATE TABLE [dbo].[Sleep]
   [Sp02Id] INT FOREIGN KEY REFERENCES [dbo].[Sp02] ([Id]),
   [BreathingRateId] INT FOREIGN KEY REFERENCES [dbo].[BreathingRate] ([Id])
 )
+GO;
