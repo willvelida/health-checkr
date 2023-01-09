@@ -78,8 +78,22 @@ jobs:
           parameters: ./HealthCheckr.Sleep/deploy/parameters.prod.json
           failOnStdErr: false
 
-  build-function:
+  deploy-sql-tables:
     needs: deploy-infra
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@v2
+      - name: 'Deploy Azure SQL Tables'
+        uses: azure/sql-action@v2
+        with:
+          connection-string: ${{ secrets.AZURE_SQL_CONNECTION }}
+          path: './HealthCheckr.Sleep/src/HealthCheckr.Sleep/HealthCheckr.Sleep.Sql/HealthCheckr.Sleep.Sql.sqlproj'
+          build-arguments: '-c Release'
+          action: 'publish'
+
+  build-function:
+    needs: deploy-sql-tables
     runs-on: ubuntu-latest
     defaults:
       run:
