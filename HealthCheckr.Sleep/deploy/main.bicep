@@ -34,6 +34,18 @@ param lastDeployed string = utcNow()
 @description('The name of the App Config instance that this function will use')
 param appConfigName string
 
+@description('The name of the SQL Server that this function app will use')
+param sqlServerName string
+
+@description('The name of the SQL database')
+param sqlDatabaseName string
+
+@description('The administrator username of the SQL logical server')
+param sqlAdminLogin string
+
+@description('The administrator password of the SQL logical server')
+param sqlAdminPassword string
+
 var functionRuntime = 'dotnet-isolated'
 var tags = {
   ApplicationName: 'HealthCheckr'
@@ -68,6 +80,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
 
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2022-02-15-preview' existing = {
   name: cosmosDbAccountName
+}
+
+resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
+  name: sqlServerName
 }
 
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
@@ -182,6 +198,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         {
           name: 'AzureAppConfigEndpoint'
           value: appConfig.properties.endpoint
+        }
+        {
+          name: 'SqlConnectionString'
+          value: 'Server=tcp:${sqlServer.name}${environment().suffixes.sqlServerHostname},1433;Initial Catalog=${sqlDatabaseName};Persist Security Info=False;User ID=${sqlAdminLogin};Password=${sqlAdminPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
         }
         {
           name: 'WEBSITE_RUN_FROM_PACKAGE'

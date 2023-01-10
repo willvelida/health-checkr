@@ -28,6 +28,12 @@
         },
         "appConfigName": {
             "value": "appconfig-healthcheckr-prod"
+        },
+        "sqlServerName": {
+            "value": "sql-healthcheckr-prod"
+        },
+        "sqlDatabaseName": {
+            "value": "HealthCheckrDB"
         }
     }
 }
