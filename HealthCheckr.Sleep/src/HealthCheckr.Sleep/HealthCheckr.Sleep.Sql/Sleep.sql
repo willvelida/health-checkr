@@ -42,8 +42,6 @@ CREATE TABLE [dbo].[Sleep]
   [RestlessCount] INT NOT NULL,
   [RestlessDuration] INT NOT NULL,
   [TimeInBed] INT NOT NULL,
-  [SleepSummaryId] INT FOREIGN KEY REFERENCES [dbo].[SleepSummary] ([Id]),
-  [Sp02Id] INT FOREIGN KEY REFERENCES [dbo].[Sp02] ([Id]),
-  [BreathingRateId] INT FOREIGN KEY REFERENCES [dbo].[BreathingRate] ([Id])
+  [SleepSummaryId] INT FOREIGN KEY REFERENCES [dbo].[SleepSummary] ([Id])
 )
 GO;

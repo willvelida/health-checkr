@@ -24,24 +24,6 @@ namespace HealthCheckr.Sleep.Repository
             _logger = logger;
         }
 
-        public async Task CreateBreathingRateDocument(BreatingRateEnvelope breatingRateEnvelope)
-        {
-            try
-            {
-                ItemRequestOptions itemRequestOptions = new ItemRequestOptions
-                {
-                    EnableContentResponseOnWrite = false
-                };
-
-                await _recordContainer.CreateItemAsync(breatingRateEnvelope, new PartitionKey(breatingRateEnvelope.DocumentType), itemRequestOptions);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception thrown in {nameof(CreateBreathingRateDocument)}: {ex.Message}");
-                throw;
-            }
-        }
-
         public async Task CreateSleepDocument(SleepEnvelope sleepEnvelope)
         {
             try
@@ -56,24 +38,6 @@ namespace HealthCheckr.Sleep.Repository
             catch (Exception ex)
             {
                 _logger.LogError($"Exception thrown in {nameof(CreateSleepDocument)}: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task CreateSp02Document(Sp02Envelope sp02Envelope)
-        {
-            try
-            {
-                ItemRequestOptions itemRequestOptions = new ItemRequestOptions
-                {
-                    EnableContentResponseOnWrite = false
-                };
-
-                await _recordContainer.CreateItemAsync(sp02Envelope, new PartitionKey(sp02Envelope.DocumentType), itemRequestOptions);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception thrown in {nameof(CreateSp02Document)}: {ex.Message}");
                 throw;
             }
         }

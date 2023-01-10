@@ -1,3 +1,4 @@
+using AutoMapper;
 using Azure.Identity;
 using Azure.Messaging.ServiceBus;
 using Azure.Security.KeyVault.Secrets;
@@ -6,13 +7,22 @@ using HealthCheckr.Sleep.Repository;
 using HealthCheckr.Sleep.Repository.Interfaces;
 using HealthCheckr.Sleep.Services;
 using HealthCheckr.Sleep.Services.Interfaces;
+using HealthCheckr.Sleep.Services.Mappers;
 using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Polly;
 using Polly.Extensions.Http;
+
+var mappingConfig = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile(new MapSp02ResponseToSp02Record());
+});
+
+var mapper = mappingConfig.CreateMapper();
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -36,6 +46,8 @@ var host = new HostBuilder()
         {
             configuration.GetSection("HealthCheckr").Bind(settings);
         });
+        s.AddAutoMapper(typeof(Program));
+        s.AddSingleton(mapper);
         s.AddSingleton(sp =>
         {
             IConfiguration configuration = sp.GetService<IConfiguration>();
@@ -56,7 +68,9 @@ var host = new HostBuilder()
             };
             return new CosmosClient(configuration["CosmosDbEndpoint"], new DefaultAzureCredential(), cosmosClientOptions);
         });
+        s.AddDbContext<SleepContext>(opt => opt.UseSqlServer(Environment.GetEnvironmentVariable("SqlConnectionString")));
         s.AddTransient<ICosmosDbRepository, CosmosDbRepository>();
+        s.AddTransient<ISleepRepository, SleepRepository>();
         s.AddTransient<ISleepService, SleepService>();
         s.AddHttpClient<IFitbitService, FitbitService>()
             .SetHandlerLifetime(TimeSpan.FromMinutes(15))

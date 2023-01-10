@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Sleep.Reposito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Sleep.Services", "HealthCheckr.Sleep.Services\HealthCheckr.Sleep.Services.csproj", "{9C051AE7-37C6-4D26-94F0-CEC8E96AC8B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Sleep.Services.UnitTests", "HealthCheckr.Sleep.Services.UnitTests\HealthCheckr.Sleep.Services.UnitTests.csproj", "{6DC5823A-37BC-4CAC-8063-82EE78AEED64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{9C051AE7-37C6-4D26-94F0-CEC8E96AC8B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C051AE7-37C6-4D26-94F0-CEC8E96AC8B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C051AE7-37C6-4D26-94F0-CEC8E96AC8B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DC5823A-37BC-4CAC-8063-82EE78AEED64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DC5823A-37BC-4CAC-8063-82EE78AEED64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DC5823A-37BC-4CAC-8063-82EE78AEED64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DC5823A-37BC-4CAC-8063-82EE78AEED64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

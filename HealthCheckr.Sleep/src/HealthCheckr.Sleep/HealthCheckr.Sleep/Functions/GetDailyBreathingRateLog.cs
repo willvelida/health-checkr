@@ -1,6 +1,8 @@
+using HealthCheckr.Sleep.Common;
 using HealthCheckr.Sleep.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace HealthCheckr.Sleep.Functions
 {
@@ -8,12 +10,14 @@ namespace HealthCheckr.Sleep.Functions
     {
         private readonly IFitbitService _fitbitService;
         private readonly ISleepService _sleepService;
+        private readonly Settings _settings;
         private readonly ILogger<GetDailyBreathingRateLog> _logger;
 
-        public GetDailyBreathingRateLog(IFitbitService fitbitService, ISleepService sleepService, ILogger<GetDailyBreathingRateLog> logger)
+        public GetDailyBreathingRateLog(IFitbitService fitbitService, ISleepService sleepService, IOptions<Settings> options, ILogger<GetDailyBreathingRateLog> logger)
         {
             _fitbitService = fitbitService;
             _sleepService = sleepService;
+            _settings = options.Value;
             _logger = logger;
         }
 
@@ -29,7 +33,7 @@ namespace HealthCheckr.Sleep.Functions
 
 
                 _logger.LogInformation("Sending Breathing Rate Log to service bus");
-                await _sleepService.SendBreathingResponseToQueue(breathingRateResponse);
+                await _sleepService.SendRecordToQueue(breathingRateResponse, _settings.BreathingRateQueueName);
             }
             catch (Exception ex)
             {

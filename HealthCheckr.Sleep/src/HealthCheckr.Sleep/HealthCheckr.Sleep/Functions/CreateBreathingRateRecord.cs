@@ -26,7 +26,7 @@ namespace HealthCheckr.Sleep.Functions
                 var breathingRate = JsonConvert.DeserializeObject<BreathingRateResponseObject>(brQueueItem);
                 _logger.LogInformation($"Parse successful! Persisting Breathing Rate record for ${breathingRate.br[0].dateTime} to database!");
 
-                await _sleepService.MapBreathingEnvelopeAndSaveToDatabase(breathingRate);
+                await _sleepService.MapBreathingRecordAndSaveToDatabase(breathingRate);
                 _logger.LogInformation($"Sp02 record for {breathingRate.br[0].dateTime} saved to database.");
             }
             catch (Exception ex)

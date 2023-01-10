@@ -1,6 +1,8 @@
+using HealthCheckr.Sleep.Common;
 using HealthCheckr.Sleep.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace HealthCheckr.Sleep.Functions
 {
@@ -8,12 +10,14 @@ namespace HealthCheckr.Sleep.Functions
     {
         private readonly IFitbitService _fitbitService;
         private readonly ISleepService _sleepService;
+        private readonly Settings _settings;
         private readonly ILogger<GetDailySleepLog> _logger;
 
-        public GetDailySleepLog(IFitbitService fitbitService, ISleepService sleepService, ILogger<GetDailySleepLog> logger)
+        public GetDailySleepLog(IFitbitService fitbitService, ISleepService sleepService, IOptions<Settings> options, ILogger<GetDailySleepLog> logger)
         {
             _fitbitService = fitbitService;
             _sleepService = sleepService;
+            _settings = options.Value;
             _logger = logger;
         }
 
@@ -29,7 +33,7 @@ namespace HealthCheckr.Sleep.Functions
 
 
                 _logger.LogInformation("Sending mapped Sleep log to service bus");
-                await _sleepService.MapAndSendSleepRecordToQueue(sleepResponse);
+                await _sleepService.SendRecordToQueue(sleepResponse, _settings.SleepQueueName);
             }
             catch (Exception ex)
             {

@@ -1,9 +1,11 @@
+using HealthCheckr.Sleep.Common;
 using HealthCheckr.Sleep.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace HealthCheckr.Sleep.Functions
 {
@@ -11,12 +13,14 @@ namespace HealthCheckr.Sleep.Functions
     {
         private readonly IFitbitService _fitbitService;
         private readonly ISleepService _sleepService;
+        private readonly Settings _settings;
         private readonly ILogger<ManuallyRetrieveDailySleepLog> _logger;
 
-        public ManuallyRetrieveDailySleepLog(IFitbitService fitbitService, ISleepService sleepService, ILogger<ManuallyRetrieveDailySleepLog> logger)
+        public ManuallyRetrieveDailySleepLog(IFitbitService fitbitService, ISleepService sleepService, IOptions<Settings> options, ILogger<ManuallyRetrieveDailySleepLog> logger)
         {
             _fitbitService = fitbitService;
             _sleepService = sleepService;
+            _settings = options.Value;
             _logger = logger;
         }
 
@@ -34,7 +38,7 @@ namespace HealthCheckr.Sleep.Functions
 
 
                 _logger.LogInformation("Sending mapped Sleep log to service bus");
-                await _sleepService.MapAndSendSleepRecordToQueue(sleepResponse);
+                await _sleepService.SendRecordToQueue(sleepResponse, _settings.SleepQueueName);
 
                 result = new OkResult();
             }

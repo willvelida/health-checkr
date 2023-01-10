@@ -26,7 +26,7 @@ namespace HealthCheckr.Sleep.Functions
                 var sp02 = JsonConvert.DeserializeObject<Sp02ResponseObject>(sp02QueueItem);
                 _logger.LogInformation($"Parse successful! Persisting sp02 for {sp02.dateTime} to database");
 
-                await _sleepService.MapSp02EnvelopeAndSaveToDatabase(sp02);
+                await _sleepService.MapSp02RecordAndSaveToDatabase(sp02);
                 _logger.LogInformation($"Sp02 record for {sp02.dateTime} saved to database.");
             }
             catch (Exception ex)

@@ -1,11 +1,10 @@
-﻿using Azure.Messaging.ServiceBus;
-using HealthCheckr.Sleep.Common;
+﻿using AutoMapper;
+using Azure.Messaging.ServiceBus;
 using HealthCheckr.Sleep.Common.Envelopes;
 using HealthCheckr.Sleep.Common.FitbitResponses;
 using HealthCheckr.Sleep.Repository.Interfaces;
 using HealthCheckr.Sleep.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace HealthCheckr.Sleep.Services
@@ -13,50 +12,32 @@ namespace HealthCheckr.Sleep.Services
     public class SleepService : ISleepService
     {
         private readonly ServiceBusClient _serviceBusClient;
+        private readonly IMapper _mapper;
+        private readonly ISleepRepository _sleepRepository;
         private readonly ICosmosDbRepository _cosmosDbRepository;
-        private readonly Settings _settings;
         private readonly ILogger<SleepService> _logger;
 
-        public SleepService(ServiceBusClient serviceBusClient, ICosmosDbRepository cosmosDbRepository, IOptions<Settings> options, ILogger<SleepService> logger)
+        public SleepService(ServiceBusClient serviceBusClient, IMapper mapper, ISleepRepository sleepRepository, ICosmosDbRepository cosmosDbRepository, ILogger<SleepService> logger)
         {
-            _settings = options.Value;
             _serviceBusClient = serviceBusClient;
+            _mapper = mapper;
+            _sleepRepository = sleepRepository;
             _cosmosDbRepository = cosmosDbRepository;
             _logger = logger;
         }
 
-        public async Task MapAndSendSleepRecordToQueue(SleepResponseObject sleepResponse)
+        public async Task MapBreathingRecordAndSaveToDatabase(BreathingRateResponseObject breathingRateResponseObject)
         {
             try
             {
-                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.SleepQueueName);
-                var messageAsJson = JsonConvert.SerializeObject(sleepResponse);
-                await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
+                var breathingRecord = new BreathingRateRecord();
+                _mapper.Map(breathingRateResponseObject, breathingRecord);
+
+                await _sleepRepository.AddBreathingRateRecord(breathingRecord);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception thrown in {nameof(MapAndSendSleepRecordToQueue)}: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task MapBreathingEnvelopeAndSaveToDatabase(BreathingRateResponseObject breathingRateResponseObject)
-        {
-            try
-            {
-                var breathingEnvelope = new BreatingRateEnvelope
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    BreathingRate = breathingRateResponseObject,
-                    Date = breathingRateResponseObject.br[0].dateTime,
-                    DocumentType = "BreathingRate"
-                };
-
-                await _cosmosDbRepository.CreateBreathingRateDocument(breathingEnvelope);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception thrown in {nameof(MapBreathingEnvelopeAndSaveToDatabase)}: {ex.Message}");
+                _logger.LogError($"Exception thrown in {nameof(MapBreathingRecordAndSaveToDatabase)}: {ex.Message}");
                 throw;
             }
         }
@@ -82,53 +63,33 @@ namespace HealthCheckr.Sleep.Services
             }
         }
 
-        public async Task MapSp02EnvelopeAndSaveToDatabase(Sp02ResponseObject sp02Response)
+        public async Task MapSp02RecordAndSaveToDatabase(Sp02ResponseObject sp02Response)
         {
             try
             {
-                var sp02Envelope = new Sp02Envelope
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Sp02 = sp02Response,
-                    DocumentType = "SP02",
-                    Date = sp02Response.dateTime
-                };
+                var sp02Record = new Sp02Record();
+                _mapper.Map(sp02Response, sp02Record);
 
-                await _cosmosDbRepository.CreateSp02Document(sp02Envelope);
+                await _sleepRepository.AddSp02Record(sp02Record);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception thrown in {nameof(MapSp02EnvelopeAndSaveToDatabase)}: {ex.Message}");
+                _logger.LogError($"Exception thrown in {nameof(MapSp02RecordAndSaveToDatabase)}: {ex.Message}");
                 throw;
             }
         }
 
-        public async Task SendBreathingResponseToQueue(BreathingRateResponseObject breathingRateResponseObject)
+        public async Task SendRecordToQueue<T>(T record, string queueName)
         {
             try
             {
-                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.BreathingRateQueueName);
-                var messageAsJson = JsonConvert.SerializeObject(breathingRateResponseObject);
+                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(queueName);
+                var messageAsJson = JsonConvert.SerializeObject(record);
                 await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception thrown in {nameof(SendBreathingResponseToQueue)}: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task SendSp02RecordToQueue(Sp02ResponseObject sp02Response)
-        {
-            try
-            {
-                ServiceBusSender serviceBusSender = _serviceBusClient.CreateSender(_settings.Sp02QueueName);
-                var messageAsJson = JsonConvert.SerializeObject(sp02Response);
-                await serviceBusSender.SendMessageAsync(new ServiceBusMessage(messageAsJson));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception thrown in {nameof(SendSp02RecordToQueue)}: {ex.Message}");
+                _logger.LogError($"Exception thrown in {nameof(SendRecordToQueue)}: {ex.Message}");
                 throw;
             }
         }
