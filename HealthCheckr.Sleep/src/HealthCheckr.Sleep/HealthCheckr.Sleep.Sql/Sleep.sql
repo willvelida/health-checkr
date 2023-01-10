@@ -11,22 +11,6 @@ CREATE TABLE [dbo].[SleepSummary] (
 )
 GO;
 
-CREATE TABLE [dbo].[Sp02] (
-  [Id] INT IDENTITY NOT NULL PRIMARY KEY,
-  [DATE] DATE NOT NULL,
-  [AvgValue] DECIMAL(5,2) NOT NULL,
-  [MinValue] DECIMAL(5,2) NOT NULL,
-  [MaxValue] DECIMAL(5,2) NOT NULL
-)
-GO;
-
-CREATE TABLE [dbo].[BreathingRate] (
-  [Id] INT IDENTITY NOT NULL PRIMARY KEY,
-  [Date] DATE NOT NULL,
-  [BreathingRate] DECIMAL(5,2) NOT NULL
-)
-GO;
-
 CREATE TABLE [dbo].[Sleep]
 (
   [Id] INT IDENTITY NOT NULL PRIMARY KEY,
