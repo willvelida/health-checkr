@@ -22,8 +22,7 @@ namespace HealthCheckr.Sleep.Functions
             containerName: "Sleep",
             Connection = "CosmosDbConnection",
             LeaseContainerName = "leases",
-            LeaseContainerPrefix = "Sleep",
-            CreateLeaseContainerIfNotExists = true)] IReadOnlyList<SleepEnvelope> sleepEnvelopes)
+            LeaseContainerPrefix = "Sleep")] IReadOnlyList<SleepEnvelope> sleepEnvelopes)
         {
             try
             {
