@@ -9,7 +9,9 @@ var roleAssignmentId = guid(roleDefinitionId, functionAppPrincipalId, cosmosDbAc
 var roleDefinitionName = 'Sleep Cosmos DB Metadata Reader Role'
 var dataActions = [
   'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
   'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/readChangeFeed'
 ] 
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2021-11-15-preview' existing = {
