@@ -19,6 +19,7 @@ param keyVaultName string
 @description('The App Config instance to store Cosmos Values in')
 param appConfigName string
 
+var leaseContainerName = 'leases'
 var cosmosPrimaryMasterKeySecretName = 'CosmosDbPrimaryMasterKey'
 var cosmosPrimaryReadKeySecretName = 'CosmosDbPrimaryReadKey'
 var cosmosSecondaryMasterKeySecretName = 'CosmosDbSecondaryMasterKey'
@@ -79,6 +80,30 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
       partitionKey: {
         paths: [
           '/DocumentType'
+        ]
+        kind: 'Hash'
+      }
+      indexingPolicy: {
+        indexingMode: 'consistent'
+        includedPaths: [
+          {
+            path: '/*'
+          }
+        ]
+      }
+    }
+  }
+}
+
+resource leaseContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2021-11-15-preview' = {
+  name: leaseContainerName
+  parent: database
+  properties: {
+    resource: {
+      id: leaseContainerName
+      partitionKey: {
+        paths: [
+          '/id'
         ]
         kind: 'Hash'
       }
