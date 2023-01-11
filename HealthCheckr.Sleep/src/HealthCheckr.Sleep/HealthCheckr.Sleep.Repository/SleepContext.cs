@@ -12,5 +12,7 @@ namespace HealthCheckr.Sleep.Repository
 
         public DbSet<Sp02Record> Sp02 { get; set; }
         public DbSet<BreathingRateRecord> BreathingRate { get; set; }
+        public DbSet<SleepSummaryRecord> SleepSummary { get; set; }
+        public DbSet<SleepRecord> Sleep { get; set; }
     }
 }

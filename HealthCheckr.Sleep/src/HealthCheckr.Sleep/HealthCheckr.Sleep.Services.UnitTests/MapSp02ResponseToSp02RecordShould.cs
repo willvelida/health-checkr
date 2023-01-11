@@ -5,11 +5,6 @@ using FluentAssertions.Execution;
 using HealthCheckr.Sleep.Common.Envelopes;
 using HealthCheckr.Sleep.Common.FitbitResponses;
 using HealthCheckr.Sleep.Services.Mappers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HealthCheckr.Sleep.Services.UnitTests
 {

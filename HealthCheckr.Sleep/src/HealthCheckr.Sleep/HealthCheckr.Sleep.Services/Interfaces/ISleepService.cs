@@ -1,4 +1,5 @@
-﻿using HealthCheckr.Sleep.Common.FitbitResponses;
+﻿using HealthCheckr.Sleep.Common.Envelopes;
+using HealthCheckr.Sleep.Common.FitbitResponses;
 
 namespace HealthCheckr.Sleep.Services.Interfaces
 {
@@ -8,5 +9,6 @@ namespace HealthCheckr.Sleep.Services.Interfaces
         Task MapSp02RecordAndSaveToDatabase(Sp02ResponseObject sp02Response);
         Task MapBreathingRecordAndSaveToDatabase(BreathingRateResponseObject breathingRateResponseObject);
         Task SendRecordToQueue<T>(T record, string queueName);
+        Task SaveSleepAndSleepSummaryRecord(SleepEnvelope sleepEnvelope);
     }
 }

@@ -20,6 +20,9 @@ using Polly.Extensions.Http;
 var mappingConfig = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new MapSp02ResponseToSp02Record());
+    cfg.AddProfile(new MapBreathingRateResponseToBreathingRateRecord());
+    cfg.AddProfile(new MapSleepEnvelopeToSleepRecord());
+    cfg.AddProfile(new MapSleepEnvelopeToSleepSummaryRecord());
 });
 
 var mapper = mappingConfig.CreateMapper();

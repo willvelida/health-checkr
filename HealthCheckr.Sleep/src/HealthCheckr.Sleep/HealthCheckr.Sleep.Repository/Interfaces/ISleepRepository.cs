@@ -6,5 +6,6 @@ namespace HealthCheckr.Sleep.Repository.Interfaces
     {
         Task AddSp02Record(Sp02Record sp02Record);
         Task AddBreathingRateRecord(BreathingRateRecord rateRecord);
+        Task AddSleepAndSleepSummaryRecord(SleepSummaryRecord sleepSummaryRecord, SleepRecord sleepRecord);
     }
 }

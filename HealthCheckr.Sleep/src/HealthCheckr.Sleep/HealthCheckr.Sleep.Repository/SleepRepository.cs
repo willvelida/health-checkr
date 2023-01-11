@@ -31,6 +31,40 @@ namespace HealthCheckr.Sleep.Repository
             }
         }
 
+        public async Task AddSleepAndSleepSummaryRecord(SleepSummaryRecord sleepSummaryRecord, SleepRecord sleepRecord)
+        {
+            try
+            {
+                _logger.LogInformation($"Persisting Sleep and Sleep Summary record. Begin transaction.");
+                using var transaction = _context.Database.BeginTransaction();
+
+                _logger.LogInformation($"Attempting to persist Sleep Summary record for {sleepSummaryRecord.Date}");
+                _context.SleepSummary.Add(sleepSummaryRecord);
+                _logger.LogInformation($"Sleep Summary record for {sleepSummaryRecord.Date} successfully persisted");
+
+                _logger.LogInformation($"Getting Sleep Summary Id");
+                var sleepSummaryId = _context.SleepSummary
+                    .OrderByDescending(p => p.Date)
+                    .Select(p => p.Id)
+                    .FirstOrDefault();
+                _logger.LogInformation($"Sleep Summary Id: {sleepSummaryId}. Setting it in Sleep record");
+                sleepRecord.SleepSummaryId = sleepSummaryId;
+
+                _logger.LogInformation($"Attempting to persist Sleep record for {sleepRecord.Date}");
+                _context.Sleep.Add(sleepRecord);
+                _logger.LogInformation($"Sleep record for {sleepRecord.Date} successfully persisted");
+
+                _logger.LogInformation($"Committing transaction");
+                await transaction.CommitAsync();
+                _logger.LogInformation($"Transaction committed");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(AddSleepAndSleepSummaryRecord)}: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task AddSp02Record(Sp02Record sp02Record)
         {
             try

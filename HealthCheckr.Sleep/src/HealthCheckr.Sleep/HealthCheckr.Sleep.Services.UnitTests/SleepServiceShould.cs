@@ -7,11 +7,6 @@ using HealthCheckr.Sleep.Common.FitbitResponses;
 using HealthCheckr.Sleep.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HealthCheckr.Sleep.Services.UnitTests
 {
@@ -37,6 +32,8 @@ namespace HealthCheckr.Sleep.Services.UnitTests
 
             _mapperMock.Setup(x => x.Map(It.IsAny<Sp02ResponseObject>(), It.IsAny<Sp02Record>())).Verifiable();
             _mapperMock.Setup(x => x.Map(It.IsAny<BreathingRateResponseObject>(), It.IsAny<BreathingRateRecord>())).Verifiable();
+            _mapperMock.Setup(x => x.Map(It.IsAny<SleepEnvelope>(), It.IsAny<SleepRecord>())).Verifiable();
+            _mapperMock.Setup(x => x.Map(It.IsAny<SleepEnvelope>(), It.IsAny<SleepSummaryRecord>())).Verifiable();
 
             _sut = new SleepService(
                 _serviceBusMock.Object,
@@ -160,6 +157,44 @@ namespace HealthCheckr.Sleep.Services.UnitTests
             // ASSERT
             await sleepServiceAction.Should().ThrowAsync<Exception>();
             _loggerMock.VerifyLog(logger => logger.LogError($"Exception thrown in MapSp02RecordAndSaveToDatabase: Mock Failure"));
+        }
+
+        [Fact]
+        public async Task SaveSleepAndSleepSummaryRecordSuccessfully()
+        {
+            // ARRANGE
+            var fixture = new Fixture();
+            var sleepEnvelope = fixture.Create<SleepEnvelope>();
+
+            _sleepRepoMock
+                 .Setup(x => x.AddSleepAndSleepSummaryRecord(It.IsAny<SleepSummaryRecord>(), It.IsAny<SleepRecord>()))
+                 .Returns(Task.CompletedTask);
+
+            // ACT
+            Func<Task> sleepServiceAction = async () => await _sut.SaveSleepAndSleepSummaryRecord(sleepEnvelope);
+
+            // ASSERT
+            await sleepServiceAction.Should().NotThrowAsync();
+            _sleepRepoMock.Verify(x => x.AddSleepAndSleepSummaryRecord(It.IsAny<SleepSummaryRecord>(), It.IsAny<SleepRecord>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task ThrowExceptionWhenSaveSleepAndSleepSummaryRecordFails()
+        {
+            // ARRANGE
+            var fixture = new Fixture();
+            var sleepEnvelope = fixture.Create<SleepEnvelope>();
+
+            _sleepRepoMock
+                 .Setup(x => x.AddSleepAndSleepSummaryRecord(It.IsAny<SleepSummaryRecord>(), It.IsAny<SleepRecord>()))
+                 .ThrowsAsync(new Exception("Mock Failure"));
+
+            // ACT
+            Func<Task> sleepServiceAction = async () => await _sut.SaveSleepAndSleepSummaryRecord(sleepEnvelope);
+
+            // ASSERT
+            await sleepServiceAction.Should().ThrowAsync<Exception>();
+            _loggerMock.VerifyLog(logger => logger.LogError($"Exception thrown in SaveSleepAndSleepSummaryRecord: Mock Failure"));
         }
 
         [Fact]

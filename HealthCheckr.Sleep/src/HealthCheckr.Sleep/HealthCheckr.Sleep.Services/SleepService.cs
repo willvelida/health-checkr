@@ -79,6 +79,22 @@ namespace HealthCheckr.Sleep.Services
             }
         }
 
+        public async Task SaveSleepAndSleepSummaryRecord(SleepEnvelope sleepEnvelope)
+        {
+            try
+            {
+                var sleepSummaryRecord = _mapper.Map<SleepSummaryRecord>(sleepEnvelope);
+                var sleepRecord = _mapper.Map<SleepRecord>(sleepEnvelope);
+
+                await _sleepRepository.AddSleepAndSleepSummaryRecord(sleepSummaryRecord, sleepRecord);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception thrown in {nameof(SaveSleepAndSleepSummaryRecord)}: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task SendRecordToQueue<T>(T record, string queueName)
         {
             try

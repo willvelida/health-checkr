@@ -184,6 +184,14 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: cosmosDb.properties.documentEndpoint
         }
         {
+          name: 'CosmosDbConnection__accountEndpoint'
+          value: cosmosDb.properties.documentEndpoint
+        }
+        {
+          name: 'CosmosDbConnection__credential'
+          value: 'managedIdentity'
+        }
+        {
           name: 'ServiceBusConnection__fullyQualifiedNamespace'
           value: '${serviceBus.name}.servicebus.windows.net'
         }
