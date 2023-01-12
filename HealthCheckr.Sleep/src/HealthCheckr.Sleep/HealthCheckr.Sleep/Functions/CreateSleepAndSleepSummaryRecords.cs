@@ -27,11 +27,19 @@ namespace HealthCheckr.Sleep.Functions
             try
             {
                 if (sleepEnvelopes != null && sleepEnvelopes.Count > 0)
-                {
+                {         
                     foreach (var sleepEnvelope in sleepEnvelopes)
                     {
+                        var sleepResponseObject = sleepEnvelope.Sleep;
+
+                        if (sleepResponseObject is null)
+                        {
+                            throw new Exception($"No Sleep Response present in Sleep Envelope");
+                        }
+
                         _logger.LogInformation($"Attempting to denormalize Sleep Envelope document for {sleepEnvelope.Date}");
-                        await _sleepService.SaveSleepAndSleepSummaryRecord(sleepEnvelope);
+                        // Pass in the Sleep Response object to this method
+                        await _sleepService.SaveSleepAndSleepSummaryRecord(sleepResponseObject);
                         _logger.LogInformation($"Records for {sleepEnvelope.Date} saved");
                     }
                 }

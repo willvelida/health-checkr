@@ -164,14 +164,14 @@ namespace HealthCheckr.Sleep.Services.UnitTests
         {
             // ARRANGE
             var fixture = new Fixture();
-            var sleepEnvelope = fixture.Create<SleepEnvelope>();
+            var sleepResponseObject = fixture.Create<SleepResponseObject>();
 
             _sleepRepoMock
                  .Setup(x => x.AddSleepAndSleepSummaryRecord(It.IsAny<SleepSummaryRecord>(), It.IsAny<SleepRecord>()))
                  .Returns(Task.CompletedTask);
 
             // ACT
-            Func<Task> sleepServiceAction = async () => await _sut.SaveSleepAndSleepSummaryRecord(sleepEnvelope);
+            Func<Task> sleepServiceAction = async () => await _sut.SaveSleepAndSleepSummaryRecord(sleepResponseObject);
 
             // ASSERT
             await sleepServiceAction.Should().NotThrowAsync();
@@ -183,14 +183,14 @@ namespace HealthCheckr.Sleep.Services.UnitTests
         {
             // ARRANGE
             var fixture = new Fixture();
-            var sleepEnvelope = fixture.Create<SleepEnvelope>();
+            var sleepResponseObject = fixture.Create<SleepResponseObject>();
 
             _sleepRepoMock
                  .Setup(x => x.AddSleepAndSleepSummaryRecord(It.IsAny<SleepSummaryRecord>(), It.IsAny<SleepRecord>()))
                  .ThrowsAsync(new Exception("Mock Failure"));
 
             // ACT
-            Func<Task> sleepServiceAction = async () => await _sut.SaveSleepAndSleepSummaryRecord(sleepEnvelope);
+            Func<Task> sleepServiceAction = async () => await _sut.SaveSleepAndSleepSummaryRecord(sleepResponseObject);
 
             // ASSERT
             await sleepServiceAction.Should().ThrowAsync<Exception>();

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HealthCheckr.Sleep.Common.Envelopes;
+using HealthCheckr.Sleep.Common.FitbitResponses;
 
 namespace HealthCheckr.Sleep.Services.Mappers
 {
@@ -7,43 +8,43 @@ namespace HealthCheckr.Sleep.Services.Mappers
     {
         public MapSleepEnvelopeToSleepRecord()
         {
-            CreateMap<SleepEnvelope, SleepRecord>()
+            CreateMap<SleepResponseObject, SleepRecord>()
                 .ForMember(
                     dest => dest.Date,
-                    opt => opt.MapFrom(src => src.Date))
+                    opt => opt.MapFrom(src => src.sleep[0].dateOfSleep))
                 .ForMember(
                     dest => dest.Efficiency,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].efficiency))
+                    opt => opt.MapFrom(src => src.sleep[0].efficiency))
                 .ForMember(
                     dest => dest.Duration,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].duration))
+                    opt => opt.MapFrom(src => src.sleep[0].duration))
                 .ForMember(
                     dest => dest.StartTime,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].startTime))
+                    opt => opt.MapFrom(src => src.sleep[0].startTime))
                 .ForMember(
                     dest => dest.EndTime,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].endTime))
+                    opt => opt.MapFrom(src => src.sleep[0].endTime))
                 .ForMember(
                     dest => dest.MinutesAfterWakeup,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].minutesAfterWakeup))
+                    opt => opt.MapFrom(src => src.sleep[0].minutesAfterWakeup))
                 .ForMember(
                     dest => dest.MinutesAsleep,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].minutesAsleep))
+                    opt => opt.MapFrom(src => src.sleep[0].minutesAsleep))
                 .ForMember(
                     dest => dest.MinutesAwake,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].minutesAwake))
+                    opt => opt.MapFrom(src => src.sleep[0].minutesAwake))
                 .ForMember(
                     dest => dest.MinutesToFallAsleep,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].minutesToFallAsleep))
+                    opt => opt.MapFrom(src => src.sleep[0].minutesToFallAsleep))
                 .ForMember(
                     dest => dest.RestlessCount,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].restlessCount))
+                    opt => opt.MapFrom(src => src.sleep[0].restlessCount))
                 .ForMember(
                     dest => dest.RestlessDuration,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].restlessDuration))
+                    opt => opt.MapFrom(src => src.sleep[0].restlessDuration))
                 .ForMember(
                     dest => dest.TimeInBed,
-                    opt => opt.MapFrom(src => src.Sleep.sleep[0].timeInBed));
+                    opt => opt.MapFrom(src => src.sleep[0].timeInBed));
         }
     }
 }

@@ -9,6 +9,6 @@ namespace HealthCheckr.Sleep.Services.Interfaces
         Task MapSp02RecordAndSaveToDatabase(Sp02ResponseObject sp02Response);
         Task MapBreathingRecordAndSaveToDatabase(BreathingRateResponseObject breathingRateResponseObject);
         Task SendRecordToQueue<T>(T record, string queueName);
-        Task SaveSleepAndSleepSummaryRecord(SleepEnvelope sleepEnvelope);
+        Task SaveSleepAndSleepSummaryRecord(SleepResponseObject sleepResponseObject);
     }
 }

@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using HealthCheckr.Sleep.Common.Envelopes;
+using HealthCheckr.Sleep.Common.FitbitResponses;
 using HealthCheckr.Sleep.Services.Mappers;
 
 namespace HealthCheckr.Sleep.Services.UnitTests
@@ -26,23 +27,22 @@ namespace HealthCheckr.Sleep.Services.UnitTests
         {
             // ARRANGE
             var fixture = new Fixture();
-            var sleepEnvelope = fixture.Create<SleepEnvelope>();
-            sleepEnvelope.Id = "1";
+            var sleepResponseObject = fixture.Create<SleepResponseObject>();
 
             // ACT
-            var expectedSleepSummaryRecord = _mapper.Map<SleepSummaryRecord>(sleepEnvelope);
+            var expectedSleepSummaryRecord = _mapper.Map<SleepSummaryRecord>(sleepResponseObject);
 
             // ASSERT
             using (new AssertionScope())
             {
-                expectedSleepSummaryRecord.Date.Should().Be(sleepEnvelope.Date);
-                expectedSleepSummaryRecord.DeepSleep.Should().Be(sleepEnvelope.Sleep.summary.stages.deep);
-                expectedSleepSummaryRecord.LightSleep.Should().Be(sleepEnvelope.Sleep.summary.stages.light);
-                expectedSleepSummaryRecord.REMSleep.Should().Be(sleepEnvelope.Sleep.summary.stages.rem);
-                expectedSleepSummaryRecord.AwakeMinutes.Should().Be(sleepEnvelope.Sleep.summary.stages.wake);
-                expectedSleepSummaryRecord.TotalMinutesAsleep.Should().Be(sleepEnvelope.Sleep.summary.totalMinutesAsleep);
-                expectedSleepSummaryRecord.TotalSleepRecords.Should().Be(sleepEnvelope.Sleep.summary.totalSleepRecords);
-                expectedSleepSummaryRecord.TotalTimeInBed.Should().Be(sleepEnvelope.Sleep.summary.totalTimeInBed);
+                expectedSleepSummaryRecord.Date.Should().Be(sleepResponseObject.sleep[0].dateOfSleep);
+                expectedSleepSummaryRecord.DeepSleep.Should().Be(sleepResponseObject.summary.stages.deep);
+                expectedSleepSummaryRecord.LightSleep.Should().Be(sleepResponseObject.summary.stages.light);
+                expectedSleepSummaryRecord.REMSleep.Should().Be(sleepResponseObject.summary.stages.rem);
+                expectedSleepSummaryRecord.AwakeMinutes.Should().Be(sleepResponseObject.summary.stages.wake);
+                expectedSleepSummaryRecord.TotalMinutesAsleep.Should().Be(sleepResponseObject.summary.totalMinutesAsleep);
+                expectedSleepSummaryRecord.TotalSleepRecords.Should().Be(sleepResponseObject.summary.totalSleepRecords);
+                expectedSleepSummaryRecord.TotalTimeInBed.Should().Be(sleepResponseObject.summary.totalTimeInBed);
             }
         }
     }

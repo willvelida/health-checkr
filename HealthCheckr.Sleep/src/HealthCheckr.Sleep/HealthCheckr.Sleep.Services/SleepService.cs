@@ -79,12 +79,12 @@ namespace HealthCheckr.Sleep.Services
             }
         }
 
-        public async Task SaveSleepAndSleepSummaryRecord(SleepEnvelope sleepEnvelope)
+        public async Task SaveSleepAndSleepSummaryRecord(SleepResponseObject sleepResponseObject)
         {
             try
             {
-                var sleepSummaryRecord = _mapper.Map<SleepSummaryRecord>(sleepEnvelope);
-                var sleepRecord = _mapper.Map<SleepRecord>(sleepEnvelope);
+                var sleepSummaryRecord = _mapper.Map<SleepSummaryRecord>(sleepResponseObject);
+                var sleepRecord = _mapper.Map<SleepRecord>(sleepResponseObject);
 
                 await _sleepRepository.AddSleepAndSleepSummaryRecord(sleepSummaryRecord, sleepRecord);
             }
