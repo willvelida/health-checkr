@@ -19,7 +19,7 @@ namespace HealthCheckr.Activity.Functions
         [Function(nameof(CreateActivitySummaries))]
         public async Task Run([CosmosDBTrigger(
             databaseName: "HealthCheckrDB",
-            containerName: "Sleep",
+            containerName: "Activity",
             Connection = "CosmosDbConnection",
             LeaseContainerName = "leases",
             LeaseContainerPrefix = "Activity")] IReadOnlyList<ActivityEnvelope> activityEnvelopes)
