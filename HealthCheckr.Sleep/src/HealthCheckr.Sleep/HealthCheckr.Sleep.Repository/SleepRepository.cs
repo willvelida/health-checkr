@@ -40,6 +40,7 @@ namespace HealthCheckr.Sleep.Repository
 
                 _logger.LogInformation($"Attempting to persist Sleep Summary record for {sleepSummaryRecord.Date}");
                 _context.SleepSummary.Add(sleepSummaryRecord);
+                await _context.SaveChangesAsync();
                 _logger.LogInformation($"Sleep Summary record for {sleepSummaryRecord.Date} successfully persisted");
 
                 _logger.LogInformation($"Getting Sleep Summary Id");
@@ -52,6 +53,7 @@ namespace HealthCheckr.Sleep.Repository
 
                 _logger.LogInformation($"Attempting to persist Sleep record for {sleepRecord.Date}");
                 _context.Sleep.Add(sleepRecord);
+                await _context.SaveChangesAsync();
                 _logger.LogInformation($"Sleep record for {sleepRecord.Date} successfully persisted");
 
                 _logger.LogInformation($"Committing transaction");
