@@ -45,7 +45,7 @@ namespace HealthCheckr.Sleep.Repository
 
                 _logger.LogInformation($"Getting Sleep Summary Id");
                 var sleepSummaryId = _context.SleepSummary
-                    .OrderByDescending(p => p.Date)
+                    .OrderBy(p => p.Date)
                     .Select(p => p.Id)
                     .FirstOrDefault();
                 _logger.LogInformation($"Sleep Summary Id: {sleepSummaryId}. Setting it in Sleep record");
