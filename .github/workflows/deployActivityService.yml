@@ -44,7 +44,7 @@ jobs:
           deploymentName: ${{ github.run_number }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./HealthCheckr.Activity/deploy/main.bicep
-          parameters: ./HealthCheckr.Activity/deploy/parameters.prod.json
+          parameters: ./HealthCheckr.Activity/deploy/parameters.prod.json sqlAdminLogin=${{ secrets.SQL_ADMIN }} sqlAdminPassword=${{ secrets.SQL_PASSWORD }}
           deploymentMode: Validate
 
   preview:
@@ -60,7 +60,7 @@ jobs:
         name: Run what-if
         with:
           inlineScript: |
-            az deployment group what-if --resource-group ${{ secrets.AZURE_RG }} --template-file ./HealthCheckr.Activity/deploy/main.bicep --parameters ./HealthCheckr.Activity/deploy/parameters.prod.json
+            az deployment group what-if --resource-group ${{ secrets.AZURE_RG }} --template-file ./HealthCheckr.Activity/deploy/main.bicep --parameters ./HealthCheckr.Activity/deploy/parameters.prod.json sqlAdminLogin=${{ secrets.SQL_ADMIN }} sqlAdminPassword=${{ secrets.SQL_PASSWORD }}
   deploy-infra:
     runs-on: ubuntu-latest
     environment: Production
@@ -77,10 +77,25 @@ jobs:
         with:
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./HealthCheckr.Activity/deploy/main.bicep
-          parameters: ./HealthCheckr.Activity/deploy/parameters.prod.json
+          parameters: ./HealthCheckr.Activity/deploy/parameters.prod.json sqlAdminLogin=${{ secrets.SQL_ADMIN }} sqlAdminPassword=${{ secrets.SQL_PASSWORD }}
           failOnStdErr: false
-  build-function:
+
+  deploy-sql-tables:
     needs: deploy-infra
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@v2
+      - name: 'Deploy Azure SQL Tables'
+        uses: azure/sql-action@v2
+        with:
+          connection-string: ${{ secrets.AZURE_SQL_CONNECTION }}
+          path: './HealthCheckr.Activity/src/HealthCheckr.Activity/HealthCheckr.Activity.Sql/HealthCheckr.Activity.Sql.sqlproj'
+          build-arguments: '-c Release'
+          action: 'publish'
+
+  build-function:
+    needs: deploy-sql-tables
     runs-on: ubuntu-latest
     defaults:
       run:

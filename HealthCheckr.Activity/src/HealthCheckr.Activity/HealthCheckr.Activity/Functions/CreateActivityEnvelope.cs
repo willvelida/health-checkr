@@ -6,18 +6,18 @@ using Newtonsoft.Json;
 
 namespace HealthCheckr.Activity.Functions
 {
-    public class CreateActivityRecord
+    public class CreateActivityEnvelope
     {
         private readonly IActivityService _activityService;
-        private readonly ILogger<CreateActivityRecord> _logger;
+        private readonly ILogger<CreateActivityEnvelope> _logger;
 
-        public CreateActivityRecord(IActivityService activityService, ILogger<CreateActivityRecord> logger)
+        public CreateActivityEnvelope(IActivityService activityService, ILogger<CreateActivityEnvelope> logger)
         {
             _activityService = activityService;
             _logger = logger;
         }
 
-        [Function(nameof(CreateActivityRecord))]
+        [Function(nameof(CreateActivityEnvelope))]
         public async Task RunAsync([ServiceBusTrigger("activityqueue", Connection = "ServiceBusConnection")] string activityQueueItem)
         {
             try
@@ -33,7 +33,7 @@ namespace HealthCheckr.Activity.Functions
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception thrown in {nameof(CreateActivityRecord)}: {ex.Message}");
+                _logger.LogError($"Exception thrown in {nameof(CreateActivityEnvelope)}: {ex.Message}");
                 throw;
             }
         }

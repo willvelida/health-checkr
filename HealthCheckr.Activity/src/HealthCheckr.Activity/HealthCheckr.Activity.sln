@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Activity.Repos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Activity.Services", "HealthCheckr.Activity.Services\HealthCheckr.Activity.Services.csproj", "{39D8CE54-9E40-4A88-A6A5-D0E594BD7BB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheckr.Activity.Services.UnitTests", "HealthCheckr.Activity.Services.UnitTests\HealthCheckr.Activity.Services.UnitTests.csproj", "{E6525E03-A15E-4515-9F0F-2D40C02E7DE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckr.Activity.Services.UnitTests", "HealthCheckr.Activity.Services.UnitTests\HealthCheckr.Activity.Services.UnitTests.csproj", "{E6525E03-A15E-4515-9F0F-2D40C02E7DE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
