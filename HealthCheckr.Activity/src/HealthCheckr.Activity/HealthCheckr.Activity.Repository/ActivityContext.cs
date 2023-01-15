@@ -10,8 +10,8 @@ namespace HealthCheckr.Activity.Repository
 
         }
 
-        public DbSet<ActivityHeartRateZonesRecord> ActivityHeartRateZone { get; set; }
-        public DbSet<ActivityDistancesRecord> ActivityDistance { get; set; }
+        public DbSet<ActivityHeartRateZonesRecord> ActivityHeartRateZones { get; set; }
+        public DbSet<ActivityDistancesRecord> ActivityDistances { get; set; }
         public DbSet<ActivitySummaryRecord> ActivitySummary { get; set; }
         public DbSet<ActivityRecord> Activity { get; set; }
     }

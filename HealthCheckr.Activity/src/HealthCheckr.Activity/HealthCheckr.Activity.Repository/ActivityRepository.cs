@@ -21,7 +21,7 @@ namespace HealthCheckr.Activity.Repository
             try
             {
                 _logger.LogInformation($"Attempting to persist Activity Distances record for date: {activityDistancesRecord.Date}");
-                _context.ActivityDistance.Add(activityDistancesRecord);
+                _context.ActivityDistances.Add(activityDistancesRecord);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation($"Activity Distances record for data: {activityDistancesRecord.Date} successfully persisted");
             }
@@ -37,7 +37,7 @@ namespace HealthCheckr.Activity.Repository
             try
             {
                 _logger.LogInformation($"Attempting to persist Activity Heart Rate Zone record for date: {activityHeartRateZonesRecord.Date}");
-                _context.ActivityHeartRateZone.Add(activityHeartRateZonesRecord);
+                _context.ActivityHeartRateZones.Add(activityHeartRateZonesRecord);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation($"Activity Heart Rate Zone record for data: {activityHeartRateZonesRecord.Date} successfully persisted");
             }
@@ -98,7 +98,7 @@ namespace HealthCheckr.Activity.Repository
             try
             {
                 _logger.LogInformation("Getting Activity Distance Id");
-                var activityDistanceId = await _context.ActivityDistance
+                var activityDistanceId = await _context.ActivityDistances
                     .OrderByDescending(p => p.Id)
                     .Select(p => p.Id)
                     .FirstOrDefaultAsync();
@@ -118,7 +118,7 @@ namespace HealthCheckr.Activity.Repository
             try
             {
                 _logger.LogInformation("Getting Activity Heart Rate Zone Id");
-                var activityHeartRateZoneId = await _context.ActivityHeartRateZone
+                var activityHeartRateZoneId = await _context.ActivityHeartRateZones
                     .OrderByDescending(p => p.Id)
                     .Select(p => p.Id)
                     .FirstOrDefaultAsync();
