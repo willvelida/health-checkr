@@ -12,7 +12,7 @@ namespace HealthCheckr.Activity.Services.Mappers
                 .ForMember(dest => dest.ActivityType,
                     opt => opt.MapFrom(src => src.activity))
                 .ForMember(dest => dest.Distance,
-                    opt => opt.MapFrom(src => src.distance));
+                    opt => opt.MapFrom(src => Math.Round(src.distance, 2)));
         }
     }
 }

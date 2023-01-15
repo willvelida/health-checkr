@@ -18,7 +18,7 @@ namespace HealthCheckr.Activity.Services.Mappers
                 .ForMember(dest => dest.MinHR,
                     opt => opt.MapFrom(src => src.min))
                 .ForMember(dest => dest.CaloriesOut,
-                    opt => opt.MapFrom(src => src.caloriesOut));
+                    opt => opt.MapFrom(src => Math.Round(src.caloriesOut, 2)));
         }
     }
 }
