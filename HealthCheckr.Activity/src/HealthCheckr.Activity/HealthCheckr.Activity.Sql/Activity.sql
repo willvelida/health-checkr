@@ -5,7 +5,7 @@ CREATE TABLE [dbo].[ActivityHeartRateZones]
   [Minutes] INT NOT NULL,
   [MaxHR] INT NOT NULL,
   [MinHR] INT NOT NULL,
-  [CaloriesOut] DECIMAL(4,2) NOT NULL,
+  [CaloriesOut] DECIMAL(10,5) NOT NULL,
   [Date] DATE NOT NULL,
 )
 GO;
@@ -14,7 +14,7 @@ CREATE TABLE [dbo].[ActivityDistances]
 (
   [Id] INT IDENTITY NOT NULL PRIMARY KEY,
   [ActivityType] VARCHAR(50) NOT NULL,
-  [Distance] DECIMAL(2,2) NOT NULL,
+  [Distance] DECIMAL(10,5) NOT NULL,
   [Date] DATE NOT NULL,
 )
 GO;
@@ -26,7 +26,7 @@ CREATE TABLE [dbo].[ActivitySummary]
   [CaloriesBMR] INT NOT NULL,
   [CaloriesOut] INT NOT NULL,
   [ActivityCalories] INT NOT NULL,
-  [Elevation] DECIMAL(5,2) NOT NULL,
+  [Elevation] DECIMAL(10,5) NOT NULL,
   [FairlyActiveMinutes] INT NOT NULL,
   [Floors] INT NOT NULL,
   [LightlyActiveMinutes] INT NOT NULL,
@@ -53,3 +53,4 @@ CREATE TABLE [dbo].[Activity]
   [ActivitySummaryId] INT FOREIGN KEY REFERENCES [dbo].[ActivitySummary] ([Id]),
 )
 GO;
+
